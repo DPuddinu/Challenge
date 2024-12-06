@@ -1,20 +1,26 @@
 {
   "$schema": "node_modules/nx/schemas/project-schema.json",
-  "name": "pwa-angular",
+  "name": "app-trips",
   "projectType": "application",
   "generators": {},
   "sourceRoot": "src",
   "prefix": "app",
+  "i18n": {
+    "sourceLocale": "en-US",
+    "locales": {
+      "it": "src/locales/messages.it.json"
+    }
+  },
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
       "options": {
-        "outputPath": "dist/pwa-angular",
+        "localize": true,
+        "i18nMissingTranslation": "error",
+        "outputPath": "dist/app-trips",
         "index": "src/index.html",
         "browser": "src/main.ts",
-        "polyfills": [
-          "zone.js"
-        ],
+        "polyfills": ["zone.js"],
         "tsConfig": "tsconfig.app.json",
         "assets": [
           {
@@ -22,12 +28,13 @@
             "input": "public"
           }
         ],
-        "styles": [
-          "src/styles.css"
-        ],
+        "styles": ["src/styles.css"],
         "scripts": []
       },
       "configurations": {
+        "it": {
+          "localize": ["it"]
+        },
         "production": {
           "budgets": [
             {
@@ -53,27 +60,29 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@nx/angular:dev-server",
+      "defaultConfiguration": "development",
       "configurations": {
-        "production": {
-          "buildTarget": "pwa-angular:build:production"
-        },
         "development": {
-          "buildTarget": "pwa-angular:build:development"
+          "buildTarget": "app-trips:build:development"
+        },
+        "it": {
+          "buildTarget": "app-trips:build:development,it"
         }
-      },
-      "defaultConfiguration": "development"
+      }
     },
     "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n"
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "outputPath": "src/locales",
+        "format": "json",
+        "buildTarget": "app-trips:build"
+      }
     },
     "test": {
       "executor": "@angular-devkit/build-angular:karma",
       "options": {
-        "polyfills": [
-          "zone.js",
-          "zone.js/testing"
-        ],
+        "polyfills": ["zone.js", "zone.js/testing"],
         "tsConfig": "tsconfig.spec.json",
         "assets": [
           {
@@ -81,9 +90,7 @@
             "input": "public"
           }
         ],
-        "styles": [
-          "src/styles.css"
-        ],
+        "styles": ["src/styles.css"],
         "scripts": []
       }
     }

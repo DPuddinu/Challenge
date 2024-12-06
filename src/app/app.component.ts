@@ -4,9 +4,15 @@ import { RouterOutlet } from '@angular/router';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  template: `
+    <div class="p-4">
+      <h1 i18n="site header|An introduction header for this sample">
+        Hello i18n!
+      </h1>
+      <router-outlet />
+    </div>
+  `,
 })
 export class AppComponent {
-  title = 'pwa-angular';
+  title = 'app-trips';
 }
