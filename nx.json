@@ -34,7 +34,11 @@
   },
   "generators": {
     "@nx/angular:component": {
-      "style": "css"
+      "style": "css",
+      "standalone": true,
+      "changeDetection": "OnPush",
+      "inlineStyle": true,
+      "inlineTemplate": true
     }
   }
 }
