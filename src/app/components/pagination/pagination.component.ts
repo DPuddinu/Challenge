@@ -11,19 +11,19 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-pagination',
   imports: [CommonModule],
-  template: ` 
-  <ul class="pagination">
+  template: ` <ul class="pagination">
     <li
       class="paginate_button page-item first"
       id="dataTable_first"
       [ngClass]="currentPage() === 0 ? 'disabled' : ''"
     >
       <button
+        i18n="First button|The first button in the pagination"
         class="page-link"
         (click)="firstPage()"
         [disabled]="currentPage() === 0"
       >
-        {{ 'First' }}
+        First
       </button>
     </li>
     <li
@@ -32,11 +32,12 @@ import { CommonModule } from '@angular/common';
       id="dataTable_previous"
     >
       <button
+        i18n="Previous button|The previous button in the pagination"
         class="page-link"
         (click)="prevPage()"
         [disabled]="currentPage() === 0"
       >
-        {{ 'Previous' }}
+        Previous
       </button>
     </li>
     <li
@@ -58,8 +59,12 @@ import { CommonModule } from '@angular/common';
       class="paginate_button page-item next"
       [ngClass]="nextDisabled ? 'disabled' : ''"
     >
-      <button class="page-link" (click)="nextPage()">
-        {{ 'Next' }}
+      <button
+        i18n="Next button|The next button in the pagination"
+        class="page-link"
+        (click)="nextPage()"
+      >
+        Next
       </button>
     </li>
     <li
@@ -67,12 +72,16 @@ import { CommonModule } from '@angular/common';
       id="dataTable_last"
       [ngClass]="nextDisabled ? 'disabled' : ''"
     >
-      <button class="page-link" (click)="lastPage()">
-        {{ 'Last' }}
+      <button
+        i18n="Last button|The last button in the pagination"
+        class="page-link"
+        (click)="lastPage()"
+      >
+        Last
       </button>
     </li>
   </ul>`,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaginationComponent {
   maxPages = input.required<number>();
