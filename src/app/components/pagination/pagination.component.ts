@@ -7,80 +7,62 @@ import {
   Output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PaginationButtonComponent } from './pagination-button.component';
 
 @Component({
   selector: 'app-pagination',
-  imports: [CommonModule],
-  template: ` <ul class="pagination">
-    <li
-      class="paginate_button page-item first"
-      id="dataTable_first"
-      [ngClass]="currentPage() === 0 ? 'disabled' : ''"
-    >
-      <button
-        i18n="First button|The first button in the pagination"
-        class="page-link"
-        (click)="firstPage()"
-        [disabled]="currentPage() === 0"
-      >
-        First
-      </button>
-    </li>
-    <li
-      class="paginate_button page-item previous"
-      [ngClass]="currentPage() === 0 ? 'disabled' : ''"
-      id="dataTable_previous"
-    >
-      <button
-        i18n="Previous button|The previous button in the pagination"
-        class="page-link"
-        (click)="prevPage()"
-        [disabled]="currentPage() === 0"
-      >
-        Previous
-      </button>
-    </li>
-    <li
-      *ngFor="let page of pagesToShow()"
-      [id]="page"
-      class="paginate_button page-item"
-      [ngClass]="currentPage() === page ? 'active' : ''"
-    >
-      <button
-        class="page-link"
-        (click)="goToPage(page)"
-        [disabled]="page === -1"
-      >
-        {{ page >= 0 ? page + 1 : '...' }}
-      </button>
-    </li>
-    <li
-      id="dataTable_next"
-      class="paginate_button page-item next"
-      [ngClass]="nextDisabled ? 'disabled' : ''"
-    >
-      <button
-        i18n="Next button|The next button in the pagination"
-        class="page-link"
-        (click)="nextPage()"
-      >
-        Next
-      </button>
-    </li>
-    <li
-      class="paginate_button page-item last"
-      id="dataTable_last"
-      [ngClass]="nextDisabled ? 'disabled' : ''"
-    >
-      <button
-        i18n="Last button|The last button in the pagination"
-        class="page-link"
-        (click)="lastPage()"
-      >
-        Last
-      </button>
-    </li>
-  </ul>`,
+  imports: [CommonModule, PaginationButtonComponent],
+  template: `
+    <ul class="flex gap-1 items-center">
+      <li>
+        <app-pagination-button
+          label="First"
+          [disabled]="previousDisabled"
+          testIdAttr="first-button"
+          i18nAttr="First button|The first button in the pagination"
+          (onClick)="firstPage()"
+        />
+      </li>
+      <li>
+        <app-pagination-button
+          label="Previous"
+          [disabled]="previousDisabled"
+          testIdAttr="previous-button"
+          i18nAttr="Previous button|The previous button in the pagination"
+          (onClick)="prevPage()"
+        />
+      </li>
+      @for (page of visiblePageNumbers(); track page) {
+        <li>
+          <app-pagination-button
+            [label]="page >= 0 ? (page + 1).toString() : '...'"
+            [disabled]="page === -1"
+            [isActive]="currentPage() === page"
+            (onClick)="goToPage(page)"
+            testIdAttr="page-button"
+          />
+        </li>
+      }
+      <li>
+        <app-pagination-button
+          label="Next"
+          [disabled]="nextDisabled"
+          i18nAttr="Next button|The next button in the pagination"
+          testIdAttr="next-button"
+          (onClick)="nextPage()"
+        />
+      </li>
+      <li>
+        <app-pagination-button
+          label="Last"
+          [disabled]="nextDisabled"
+          i18nAttr="Last button|The last button in the pagination"
+          testIdAttr="last-button"
+          (onClick)="lastPage()"
+        />
+      </li>
+    </ul>
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaginationComponent {
@@ -89,7 +71,7 @@ export class PaginationComponent {
   totalPages = input.required<number>();
   pageChange = output<number>();
 
-  pagesToShow = computed(() => {
+  visiblePageNumbers = computed(() => {
     const pagesToShow: number[] = [];
 
     if (this.totalPages() <= this.maxPages()) {
@@ -155,7 +137,9 @@ export class PaginationComponent {
   lastPage() {
     this.pageChange.emit(this.totalPages() - 1);
   }
-
+  get previousDisabled() {
+    return this.currentPage() === 0;
+  }
   get nextDisabled() {
     return this.currentPage() === this.totalPages() - 1;
   }
