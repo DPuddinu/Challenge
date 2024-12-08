@@ -31,7 +31,7 @@ import { PaginationButtonComponent } from './pagination-button.component';
           (onClick)="prevPage()"
         />
       </li>
-      @for (page of visiblePageNumbers(); track page) {
+      @for (page of visiblePageNumbers(); track $index) {
       <li>
         <app-pagination-button
           [label]="page >= 0 ? (page + 1).toString() : '...'"

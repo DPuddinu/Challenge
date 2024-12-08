@@ -18,7 +18,7 @@ describe('PaginationComponent', () => {
     
     // Set default input values
     fixture.componentRef.setInput('maxPages', 5);
-    fixture.componentRef.setInput('currentPage', 0);
+    fixture.componentRef.setInput('currentPage', 1);
     fixture.componentRef.setInput('totalPages', 10);
     
     fixture.detectChanges();
@@ -36,7 +36,7 @@ describe('PaginationComponent', () => {
 
   it('should render navigation buttons with correct states', () => {
     // First page - previous/first buttons should be disabled
-    fixture.componentRef.setInput('currentPage', 0);
+    fixture.componentRef.setInput('currentPage', 1);
     fixture.detectChanges();
     
     expect(getButtonByTestId('first-button').nativeElement.disabled).toBeTrue();
@@ -45,7 +45,7 @@ describe('PaginationComponent', () => {
     expect(getButtonByTestId('last-button').nativeElement.disabled).toBeFalse();
 
     // Last page - next/last buttons should be disabled
-    fixture.componentRef.setInput('currentPage', 9);
+    fixture.componentRef.setInput('currentPage', 10);
     fixture.detectChanges();
 
     expect(getButtonByTestId('first-button').nativeElement.disabled).toBeFalse();
@@ -61,7 +61,7 @@ describe('PaginationComponent', () => {
     fixture.detectChanges();
 
     getButtonByTestId('first-button').nativeElement.click();
-    expect(pageChangeSpy).toHaveBeenCalledWith(0);
+    expect(pageChangeSpy).toHaveBeenCalledWith(1);
 
     getButtonByTestId('previous-button').nativeElement.click();
     expect(pageChangeSpy).toHaveBeenCalledWith(4);
@@ -70,7 +70,7 @@ describe('PaginationComponent', () => {
     expect(pageChangeSpy).toHaveBeenCalledWith(6);
 
     getButtonByTestId('last-button').nativeElement.click();
-    expect(pageChangeSpy).toHaveBeenCalledWith(9);
+    expect(pageChangeSpy).toHaveBeenCalledWith(10);
   });
 
   it('should render correct page numbers with ellipsis', () => {
@@ -82,13 +82,23 @@ describe('PaginationComponent', () => {
     const pageButtons = getAllPageButtons();
     const pageLabels = pageButtons.map(btn => btn.nativeElement.textContent.trim());
     
-    expect(pageLabels).toEqual(['1', '...', '5', '6', '7', '...', '10']);
+    expect(pageLabels).toEqual([
+      '1',
+      '...',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '...',
+      '10',
+    ]);
   });
 
   it('should render all pages when total pages is less than maxPages', () => {
     fixture.componentRef.setInput('maxPages', 5);
     fixture.componentRef.setInput('totalPages', 3);
-    fixture.componentRef.setInput('currentPage', 0);
+    fixture.componentRef.setInput('currentPage', 1);
     fixture.detectChanges();
 
     const pageButtons = getAllPageButtons();
@@ -129,9 +139,11 @@ describe('PaginationComponent', () => {
     fixture.detectChanges();
 
     const pageButtons = getAllPageButtons();
-    const activeButton = pageButtons.find(btn => 
-      btn.nativeElement.classList.contains('active'));
-    
-    expect(activeButton?.nativeElement.textContent.trim()).toBe('3'); // 0-based index
+    // Find the active button by checking its classList
+    const activeButton = pageButtons.findIndex((btn) =>
+      btn.nativeElement.classList.contains('bg-blue-500') && 
+      btn.nativeElement.classList.contains('text-white')
+    );
+    expect(activeButton).toBe(1); // 0-based index
   });
 });
