@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PaginationComponent } from '../../components/pagination/pagination.component';
 
@@ -7,10 +7,23 @@ import { PaginationComponent } from '../../components/pagination/pagination.comp
   standalone: true,
   imports: [CommonModule, PaginationComponent],
   template: `
-    <h1 i18n="Trips page header|The header for the trips page">Trips</h1>
-    <app-pagination [currentPage]="1" [maxPages]="5" [totalPages]="10" />
+    <app-pagination
+      [currentPage]="currentPage()"
+      [maxPages]="maxPages()"
+      [totalPages]="totalPages()"
+      (pageChange)="onPageChange($event)"
+    />
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TripsPageComponent {}
+export class TripsPageComponent {
+  currentPage = signal(1);
+  maxPages = signal(5);
+  totalPages = signal(10);
+
+  onPageChange(page: number) {
+    console.log(page)
+    this.currentPage.set(page);
+  }
+}

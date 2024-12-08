@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaginationComponent } from './pagination.component';
 import { PaginationButtonComponent } from './pagination-button.component';
 import { By } from '@angular/platform-browser';
+import '@angular/localize/init';
 
 describe('PaginationComponent', () => {
   let component: PaginationComponent;
