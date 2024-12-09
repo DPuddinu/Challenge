@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  input,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PaginationButtonComponent } from './pagination-button.component';
 
@@ -32,15 +26,15 @@ import { PaginationButtonComponent } from './pagination-button.component';
         />
       </li>
       @for (page of visiblePageNumbers(); track $index) {
-      <li>
-        <app-pagination-button
-          [label]="page >= 0 ? (page + 1).toString() : '...'"
-          [disabled]="page === -1"
-          [isActive]="currentPage() === page + 1"
-          (onClick)="goToPage(page)"
-          testIdAttr="page-button"
-        />
-      </li>
+        <li>
+          <app-pagination-button
+            [label]="page >= 0 ? (page + 1).toString() : '...'"
+            [disabled]="page === -1"
+            [isActive]="currentPage() === page + 1"
+            (onClick)="goToPage(page)"
+            testIdAttr="page-button"
+          />
+        </li>
       }
       <li>
         <app-pagination-button
@@ -62,7 +56,7 @@ import { PaginationButtonComponent } from './pagination-button.component';
       </li>
     </ul>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaginationComponent {
   maxPages = input.required<number>();
@@ -80,10 +74,7 @@ export class PaginationComponent {
     } else {
       const halfMaxPages = Math.floor(this.maxPages() / 2);
       let startPage = Math.max(1, this.currentPage() - halfMaxPages);
-      let endPage = Math.min(
-        this.totalPages() -1,
-        startPage + this.maxPages() - 1
-      );
+      let endPage = Math.min(this.totalPages() - 1, startPage + this.maxPages() - 1);
 
       if (endPage - startPage + 1 < this.maxPages()) {
         startPage = endPage - this.maxPages() + 1;
@@ -124,15 +115,15 @@ export class PaginationComponent {
   }
 
   goToPage(page: number) {
-    this.pageChange.emit(page+1);
+    this.pageChange.emit(page + 1);
   }
 
   firstPage() {
-    this.goToPage(0)
+    this.goToPage(0);
   }
 
   lastPage() {
-    this.goToPage(this.totalPages() -1)
+    this.goToPage(this.totalPages() - 1);
   }
   get previousDisabled() {
     return this.currentPage() === 1;

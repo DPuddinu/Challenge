@@ -14,8 +14,7 @@ import { PaginationComponent } from '../../components/pagination/pagination.comp
       (pageChange)="onPageChange($event)"
     />
   `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TripsPageComponent {
   currentPage = signal(1);
@@ -23,7 +22,6 @@ export class TripsPageComponent {
   totalPages = signal(10);
 
   onPageChange(page: number) {
-    console.log(page)
     this.currentPage.set(page);
   }
 }
