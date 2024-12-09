@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, input, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, forwardRef, input } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { ControlValueAccessorDirective } from '@/directives/control-value-accessor.directive';
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';

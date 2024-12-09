@@ -36,8 +36,8 @@ describe('ValidationErrorsComponent', () => {
     
     const errorElements = fixture.nativeElement.querySelectorAll('li');
     expect(errorElements.length).toBe(2);
-    expect(errorElements[0].textContent).toContain('Invalid: required');
-    expect(errorElements[1].textContent).toContain('Invalid: minlength');
+    expect(errorElements[0].textContent).toContain('required');
+    expect(errorElements[1].textContent).toContain('minimum length is 3 characters');
   });
 
   it('should display custom error messages when provided', () => {

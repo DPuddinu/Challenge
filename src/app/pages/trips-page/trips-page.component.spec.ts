@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TripsPageComponent } from './trips-page.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormInputComponent } from '@/components/form-input/form-input.component';
 
 describe('TripsPageComponent', () => {
   let component: TripsPageComponent;
@@ -7,7 +9,7 @@ describe('TripsPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TripsPageComponent]
+      imports: [TripsPageComponent, ReactiveFormsModule, FormInputComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TripsPageComponent);
