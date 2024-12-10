@@ -19,7 +19,7 @@ type InputType = 'text' | 'number' | 'email' | 'password';
   template: ` @if (control) {
     <div>
       <label
-        for="Username"
+        [for]="label()"
         class="relative block rounded-md border border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
       >
         <input
@@ -27,12 +27,12 @@ type InputType = 'text' | 'number' | 'email' | 'password';
           [type]="type()"
           [id]="inputId()"
           [formControl]="control"
-          class="py-2 px-4 peer border-none bg-transparent placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0"
+          class="py-2 px-4 peer dark:text-white border-none bg-transparent placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0"
           [placeholder]="label()"
         />
 
         <span
-          class="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white p-0.5 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs"
+          class="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white dark:bg-gray-900 p-0.5 text-xs text-gray-700 dark:text-white transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs"
         >
           {{ label() }} 
         </span>
