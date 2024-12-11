@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormInputComponent } from './form-input.component';
+import { InputComponent } from './input.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
 describe('FormInputComponent', () => {
-  let component: FormInputComponent<'text'>;
-  let fixture: ComponentFixture<FormInputComponent<'text'>>;
+  let component: InputComponent<'text'>;
+  let fixture: ComponentFixture<InputComponent<'text'>>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormInputComponent, ReactiveFormsModule]
+      imports: [InputComponent, ReactiveFormsModule]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FormInputComponent<'text'>);
+    fixture = TestBed.createComponent(InputComponent<'text'>);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('type', 'text');
     fixture.detectChanges();
