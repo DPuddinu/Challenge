@@ -19,9 +19,11 @@ import { ValidationErrorsComponent } from "../validation-errors/validation-error
         class="py-2 px-4 w-full rounded-md mt-1 h-10 bg-gray-500 dark:bg-gray-200 text-gray-500 dark:text-gray-500"
       >
         <option value="" hidden>{{ label() }}</option>
-        <option *ngFor="let option of options()" [value]="option">
-          {{ option }}
-        </option>
+        @for (option of options(); track option.value) {
+          <option [value]="option.value">
+            {{ option.label }}
+          </option>
+        }
       </select>
       @if (control.touched && control.dirty) {
         <app-validation-errors [customErrorMessages]="customErrorMessages()" [errors]="control.errors">
@@ -38,8 +40,8 @@ import { ValidationErrorsComponent } from "../validation-errors/validation-error
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SelectComponent<T> extends ControlValueAccessorDirective<T> {
-  options = input<T[]>();
+export class SelectComponent extends ControlValueAccessorDirective<{ value: string | number; label: string }> {
+  options = input<{ value: string | number; label: string }[]>();
   selectId = input<string>();
   label = input<string>();
   customErrorMessages = input<Record<string, string>>({});
