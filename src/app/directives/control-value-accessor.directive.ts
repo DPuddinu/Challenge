@@ -24,6 +24,7 @@ export class ControlValueAccessorDirective<T> implements ControlValueAccessor, O
   isDisabled = signal(false);
   
   private _onTouched!: () => T;
+  protected onChange!: (value: T) => void;
 
   ngOnInit() {
     this.setFormControl();
@@ -56,6 +57,7 @@ export class ControlValueAccessorDirective<T> implements ControlValueAccessor, O
   }
 
   registerOnChange(fn: (val: T | null) => T): void {
+    this.onChange = fn;
     this.control?.valueChanges
       .pipe(
         takeUntilDestroyed(this.destroyRef),

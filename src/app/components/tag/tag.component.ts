@@ -27,9 +27,9 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 export class TagComponent {
   id = input.required<string | number>();
   label = input<string>();
-  onClick = output<string | number>();
+  onRemove = output<string | number>();
 
   remove() {
-    this.onClick.emit(this.id());
+    this.onRemove.emit(this.id());
   }
 }
