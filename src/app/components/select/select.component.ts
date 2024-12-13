@@ -2,13 +2,13 @@ import { ChangeDetectionStrategy, Component, forwardRef, input } from '@angular/
 import { CommonModule } from '@angular/common';
 import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { ControlValueAccessorDirective } from '@/directives/control-value-accessor.directive';
-import { ValidationErrorsComponent } from "../validation-errors/validation-errors.component";
+import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
 
 @Component({
   selector: 'app-select',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ValidationErrorsComponent],
-  template: `@if (control) {
+  template: ` @if (control) {
     <div>
       <label [for]="selectId()" class="block text-xs font-medium text-gray-500 dark:text-gray-200">
         {{ label() }}

@@ -1,6 +1,14 @@
 import { Component, forwardRef, signal, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  AbstractControl,
+  FormsModule,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+  Validators
+} from '@angular/forms';
 import { TagComponent } from '../tag/tag.component';
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
 import { ControlValueAccessorDirective } from '@/directives/control-value-accessor.directive';
@@ -13,42 +21,55 @@ import { ControlValueAccessorDirective } from '@/directives/control-value-access
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => ComboBoxComponent),
       multi: true
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => ComboBoxComponent),
+      multi: true
     }
   ],
   template: `
     @if (control) {
-      <div class="flex flex-col gap-4">
-        <div class="flex gap-2">
-          <input
-            #newTagInput
-            type="text"
-            (keyup.enter)="addTag(newTagInput.value)"
-            placeholder="Enter a tag"
-            class="px-3 py-2 border rounded-md flex-grow"
-          />
-          <button
-            type="button"
-            (click)="addTag(newTagInput.value)"
-            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200"
-          >
-            Add
-          </button>
+      <label [for]="comboBoxId()" class="block text-xs font-medium text-gray-500 dark:text-gray-200">
+        {{ label() }}
+      </label>
+      <div class="flex flex-col gap-4 mt-1">
+        <div>
+          <div class="flex gap-2">
+            <input
+              #newTagInput
+              type="text"
+              (keyup.enter)="addTag(newTagInput.value)"
+              placeholder="Enter a tag"
+              class="px-3 py-2 border rounded-md flex-grow"
+              (blur)="markAsTouched()"
+            />
+            <button
+              type="button"
+              (click)="addTag(newTagInput.value)"
+              class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200"
+            >
+              Add
+            </button>
+          </div>
+          @if (control.touched && control.dirty) {
+            <app-validation-errors [customErrorMessages]="customErrorMessages()" [errors]="control.errors">
+            </app-validation-errors>
+          }
         </div>
         <div class="flex flex-wrap gap-2">
           @for (tag of tags(); track tag; let i = $index) {
             <app-tag [id]="i" [label]="tag" (onRemove)="removeTag(i)" />
           }
         </div>
-        @if (control.touched && control.dirty) {
-          <app-validation-errors [customErrorMessages]="customErrorMessages()" [errors]="control.errors">
-          </app-validation-errors>
-        }
       </div>
     }
   `
 })
-export class ComboBoxComponent extends ControlValueAccessorDirective<string[]> {
+export class ComboBoxComponent extends ControlValueAccessorDirective<string[]> implements Validator {
   tags = signal<string[]>([]);
+  label = input<string>('');
+  comboBoxId = input<string>();
   customErrorMessages = input<Record<string, string>>({});
 
   addTag(tag: string): void {
@@ -56,7 +77,8 @@ export class ComboBoxComponent extends ControlValueAccessorDirective<string[]> {
       const newTags = [...this.tags(), tag.trim()];
       this.tags.set(newTags);
       this.onChange(newTags);
-      this.control?.markAsTouched();
+      this.markAsTouched();
+      this.control?.markAsDirty();
     }
   }
 
@@ -65,12 +87,33 @@ export class ComboBoxComponent extends ControlValueAccessorDirective<string[]> {
     newTags.splice(index, 1);
     this.tags.set(newTags);
     this.onChange(newTags);
-    this.control?.markAsTouched();
+    this.markAsTouched();
   }
 
   override writeValue(value: string[]): void {
     if (value) {
       this.tags.set(value);
     }
+  }
+  markAsTouched(): void {
+    this.control?.markAsTouched();
+  }
+  validate(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) {
+      return null;
+    }
+
+    if (!Array.isArray(control.value)) {
+      return { invalidFormat: true };
+    }
+
+    const errors: ValidationErrors = {};
+
+    // Check required
+    if (control.hasValidator(Validators.required) && control.value.length === 0) {
+      errors['required'] = true;
+    }
+
+    return Object.keys(errors).length > 0 ? errors : null;
   }
 }

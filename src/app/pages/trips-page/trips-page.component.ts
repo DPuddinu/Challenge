@@ -18,8 +18,17 @@ import { ComboBoxComponent } from "../../components/combo-box/combo-box.componen
         selectId="mySelect"
         formControlName="selectName"
         ></app-select>
-        <app-combo-box formControlName="tags"></app-combo-box>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Submit</button>
+        <app-combo-box 
+          label="Tags"
+          comboBoxId="myComboBox"
+          formControlName="tags"
+          [customErrorMessages]="{
+            'required': 'Please add at least one tag',
+            'minlength': 'Please add at least 2 tags',
+            'maxlength': 'Please add at most 4 tags'
+          }"
+        ></app-combo-box>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md" (click)="onSubmit()">Submit</button>
     </form>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -29,10 +38,18 @@ export class TripsPageComponent {
   formGroup = new FormGroup({
     name: new FormControl('', Validators.required),
     selectName: new FormControl('', Validators.required),
-    tags: new FormControl([], Validators.required)
+    tags: new FormControl([], [
+      Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(4)
+    ])
   });
 
   onSubmit() {
-    console.log(this.formGroup.value);
+    if(this.formGroup.valid){
+
+    } else {
+      this.formGroup.markAllAsTouched();
+    }
   }
 }
