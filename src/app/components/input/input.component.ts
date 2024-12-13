@@ -1,14 +1,12 @@
 import { ChangeDetectionStrategy, Component, forwardRef, input } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { ControlValueAccessorDirective } from '@/directives/control-value-accessor.directive';
+import { BaseInputComponent } from '../base/base-input.component';
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
 
 type InputType = 'text' | 'number' | 'email' | 'password';
 
 @Component({
   selector: 'app-input',
-  standalone: true,
-  imports: [ReactiveFormsModule, ValidationErrorsComponent],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -16,15 +14,16 @@ type InputType = 'text' | 'number' | 'email' | 'password';
       multi: true
     }
   ],
+  imports: [ReactiveFormsModule, ValidationErrorsComponent],
   template: ` @if (control) {
     <div>
-      <label [for]="inputId()" class="block text-xs font-medium text-gray-500 dark:text-gray-200">
+      <label [for]="id()" class="block text-xs font-medium text-gray-500 dark:text-gray-200">
         {{ label() }}
       </label>
       <input
         [required]="isRequired()"
         [type]="type()"
-        [id]="inputId()"
+        [id]="id()"
         [formControl]="control"
         class="py-2 px-4 peer w-full rounded-md mt-1 h-10 bg-gray-500 dark:bg-gray-200 placeholder:text-gray-200 dark:placeholder:text-gray-500"
         [placeholder]="label()"
@@ -37,9 +36,7 @@ type InputType = 'text' | 'number' | 'email' | 'password';
   }`,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InputComponent<T> extends ControlValueAccessorDirective<T> {
-  label = input<string>();
+export class InputComponent<T> extends BaseInputComponent<T> {
   type = input.required<InputType>();
-  inputId = input<string>();
   customErrorMessages = input<Record<string, string>>({});
 }

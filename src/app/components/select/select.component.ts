@@ -1,21 +1,27 @@
 import { ChangeDetectionStrategy, Component, forwardRef, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { ControlValueAccessorDirective } from '@/directives/control-value-accessor.directive';
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
+import { BaseInputComponent } from '../base/base-input.component';
 
 @Component({
   selector: 'app-select',
-  standalone: true,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SelectComponent),
+      multi: true
+    }
+  ],
   imports: [CommonModule, ReactiveFormsModule, ValidationErrorsComponent],
   template: ` @if (control) {
     <div>
-      <label [for]="selectId()" class="block text-xs font-medium text-gray-500 dark:text-gray-200">
+      <label [for]="id()" class="block text-xs font-medium text-gray-500 dark:text-gray-200">
         {{ label() }}
       </label>
       <select
         [formControl]="control"
-        [id]="selectId()"
+        [id]="id()"
         class="py-2 px-4 w-full rounded-md mt-1 h-10 bg-gray-500 dark:bg-gray-200 text-gray-500 dark:text-gray-500"
       >
         <option value="" hidden>{{ label() }}</option>
@@ -31,18 +37,9 @@ import { ValidationErrorsComponent } from '../validation-errors/validation-error
       }
     </div>
   }`,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SelectComponent),
-      multi: true
-    }
-  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SelectComponent extends ControlValueAccessorDirective<{ value: string | number; label: string }> {
+export class SelectComponent extends BaseInputComponent<{ value: string | number; label: string }> {
   options = input<{ value: string | number; label: string }[]>();
-  selectId = input<string>();
-  label = input<string>();
   customErrorMessages = input<Record<string, string>>({});
 }

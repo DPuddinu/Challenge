@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { TagComponent } from '../tag/tag.component';
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
-import { ControlValueAccessorDirective } from '@/directives/control-value-accessor.directive';
+import { BaseInputComponent } from '../base/base-input.component';
 
 @Component({
   selector: 'app-combo-box',
@@ -30,13 +30,14 @@ import { ControlValueAccessorDirective } from '@/directives/control-value-access
   ],
   template: `
     @if (control) {
-      <label [for]="comboBoxId()" class="block text-xs font-medium text-gray-500 dark:text-gray-200">
+      <label [for]="id()" class="block text-xs font-medium text-gray-500 dark:text-gray-200">
         {{ label() }}
       </label>
       <div class="flex flex-col gap-4 mt-1">
         <div>
           <div class="flex gap-2">
             <input
+              [id]="id()"
               #newTagInput
               type="text"
               (keyup.enter)="addTag(newTagInput.value)"
@@ -66,10 +67,8 @@ import { ControlValueAccessorDirective } from '@/directives/control-value-access
     }
   `
 })
-export class ComboBoxComponent extends ControlValueAccessorDirective<string[]> implements Validator {
+export class ComboBoxComponent extends BaseInputComponent<string[]> implements Validator {
   tags = signal<string[]>([]);
-  label = input<string>('');
-  comboBoxId = input<string>();
   customErrorMessages = input<Record<string, string>>({});
 
   addTag(tag: string): void {
