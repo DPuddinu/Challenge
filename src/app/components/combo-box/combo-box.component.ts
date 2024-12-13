@@ -1,4 +1,4 @@
-import { Component, forwardRef, signal, input } from '@angular/core';
+import { Component, forwardRef, signal, input, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   AbstractControl,
@@ -68,6 +68,8 @@ import { BaseInputComponent } from '../base/base-input.component';
   `
 })
 export class ComboBoxComponent extends BaseInputComponent<string[]> implements Validator {
+  @ViewChild('newTagInput') tagInput!: ElementRef;
+
   tags = signal<string[]>([]);
   customErrorMessages = input<Record<string, string>>({});
 
@@ -78,6 +80,7 @@ export class ComboBoxComponent extends BaseInputComponent<string[]> implements V
       this.onChange(newTags);
       this.markAsTouched();
       this.control?.markAsDirty();
+      this.tagInput.nativeElement.value = '';
     }
   }
 
