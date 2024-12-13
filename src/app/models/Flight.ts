@@ -13,7 +13,7 @@ export interface Flight {
   creationDate: Date;
 }
 export type FlightFilterFields = {
-  titleFilter: string;
+  title: string;
   minPrice: number;
   maxPrice: number;
   minRating: number;
@@ -21,5 +21,5 @@ export type FlightFilterFields = {
   tags: string[];
 };
 export const flightSortByFields: Array<keyof Flight> = ['title', 'price', 'rating', 'creationDate'];
-export const flightFilterFields: Array<keyof FlightFilterFields> = ['titleFilter', 'minPrice', 'maxPrice', 'minRating', 'maxRating', 'tags'];
+export const flightFilterFields: Array<keyof FlightFilterFields> = ['title', 'minPrice', 'maxPrice', 'minRating', 'maxRating', 'tags'];
 export const flightSessionKey = 'flightSession';

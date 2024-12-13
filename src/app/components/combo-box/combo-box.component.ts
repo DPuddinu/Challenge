@@ -1,4 +1,4 @@
-import { Component, forwardRef, signal, input, ViewChild, ElementRef } from '@angular/core';
+import { Component, forwardRef, signal, input, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   AbstractControl,
@@ -65,7 +65,8 @@ import { BaseInputComponent } from '../base/base-input.component';
         </div>
       </div>
     }
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ComboBoxComponent extends BaseInputComponent<string[]> implements Validator {
   @ViewChild('newTagInput') tagInput!: ElementRef;
