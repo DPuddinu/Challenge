@@ -2,4 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* You can add global styles to this file, and also import other style files */
+html {
+  scrollbar-gutter: auto !important;
+}
+
+::backdrop {
+  background-color: rgb(0 0 0 / 0%);
+  backdrop-filter: blur(2px);
+  transition:
+    display var(--dialog-animation-duration) allow-discrete,
+    overlay var(--dialog-animation-duration) allow-discrete,
+    background-color var(--dialog-animation-duration);
+}
