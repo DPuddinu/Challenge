@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
 import { BaseInputComponent } from '../base/base-input.component';
+import { LabelComponent } from '../label/label.component';
 
 @Component({
   selector: 'app-select',
@@ -13,16 +14,15 @@ import { BaseInputComponent } from '../base/base-input.component';
       multi: true
     }
   ],
-  imports: [CommonModule, ReactiveFormsModule, ValidationErrorsComponent],
+  imports: [CommonModule, ReactiveFormsModule, ValidationErrorsComponent, LabelComponent],
   template: ` @if (control) {
     <div>
-      <label [for]="id()" class="block text-xs font-medium text-gray-500 dark:text-gray-200">
-        {{ label() }}
-      </label>
+      <app-label [text]="label()" [for]="id()"></app-label>
+
       <select
         [formControl]="control"
         [id]="id()"
-        class="py-2 px-4 w-full rounded-md mt-1 h-10 bg-gray-500 dark:bg-gray-200 text-gray-500 dark:text-gray-500"
+        class="py-2 px-4 w-full rounded-md h-10 bg-gray-500 dark:bg-gray-200 text-gray-500 dark:text-gray-500"
       >
         <option value="" hidden>{{ label() }}</option>
         @for (option of options(); track option.value) {
@@ -41,5 +41,4 @@ import { BaseInputComponent } from '../base/base-input.component';
 })
 export class SelectComponent extends BaseInputComponent<{ value: string | number; label: string }> {
   options = input<{ value: string | number; label: string }[]>();
-  customErrorMessages = input<Record<string, string>>({});
 }

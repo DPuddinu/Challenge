@@ -1,5 +1,5 @@
-import { Component, forwardRef, signal, input, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, forwardRef, signal, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   FormsModule,
@@ -9,13 +9,14 @@ import {
   Validator,
   Validators
 } from '@angular/forms';
+import { BaseInputComponent } from '../base/base-input.component';
 import { TagComponent } from '../tag/tag.component';
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
-import { BaseInputComponent } from '../base/base-input.component';
+import { LabelComponent } from "../label/label.component";
 
 @Component({
   selector: 'app-combo-box',
-  imports: [CommonModule, FormsModule, TagComponent, ValidationErrorsComponent],
+  imports: [CommonModule, FormsModule, TagComponent, ValidationErrorsComponent, LabelComponent],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -30,10 +31,8 @@ import { BaseInputComponent } from '../base/base-input.component';
   ],
   template: `
     @if (control) {
-      <label [for]="id()" class="block text-xs font-medium text-gray-500 dark:text-gray-200">
-        {{ label() }}
-      </label>
-      <div class="flex flex-col gap-4 mt-1">
+      <app-label [text]="label()" [for]="id()"></app-label>
+      <div class="flex flex-col gap-4">
         <div>
           <div class="flex gap-2">
             <input
@@ -72,7 +71,6 @@ export class ComboBoxComponent extends BaseInputComponent<string[]> implements V
   @ViewChild('newTagInput') tagInput!: ElementRef;
 
   tags = signal<string[]>([]);
-  customErrorMessages = input<Record<string, string>>({});
 
   addTag(tag: string): void {
     if (tag.trim() && !this.tags().includes(tag.trim())) {

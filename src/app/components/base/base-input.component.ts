@@ -8,4 +8,5 @@ import { Component, input } from '@angular/core';
 export class BaseInputComponent<T> extends ControlValueAccessorDirective<T> {
   label = input<string>('');
   id = input<string>('');
+  customErrorMessages = input<Record<string, string>>({});
 }
