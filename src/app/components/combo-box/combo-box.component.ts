@@ -13,10 +13,11 @@ import { BaseInputComponent } from '../base/base-input.component';
 import { TagComponent } from '../tag/tag.component';
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
 import { LabelComponent } from "../label/label.component";
+import { ButtonComponent } from "../button/button.component";
 
 @Component({
   selector: 'app-combo-box',
-  imports: [CommonModule, FormsModule, TagComponent, ValidationErrorsComponent, LabelComponent],
+  imports: [CommonModule, FormsModule, TagComponent, ValidationErrorsComponent, LabelComponent, ButtonComponent],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -40,17 +41,24 @@ import { LabelComponent } from "../label/label.component";
               #newTagInput
               type="text"
               (keyup.enter)="addTag(newTagInput.value)"
-              placeholder="Enter a tag"
-              class="px-3 py-2 border rounded-md flex-grow"
+              placeholder="Enter tags"
+              class="w-full h-10 px-4 py-2 rounded-md
+               bg-secondary-600
+               text-secondary-content
+               placeholder:text-secondary-400 
+               border border-secondary-600
+               focus:outline-none focus:ring-2 focus:ring-primary-500
+               disabled:bg-secondary-100 disabled:cursor-not-allowed
+               transition-colors duration-200"
               (blur)="markAsTouched()"
             />
-            <button
-              type="button"
+            <app-button
+              variant="secondary"
               (click)="addTag(newTagInput.value)"
-              class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200"
             >
               Add
-            </button>
+            </app-button> 
+           
           </div>
           @if (control.touched && control.dirty) {
             <app-validation-errors [customErrorMessages]="customErrorMessages()" [errors]="control.errors">

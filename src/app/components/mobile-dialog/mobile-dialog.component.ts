@@ -6,9 +6,9 @@ import { ChangeDetectionStrategy, Component, ElementRef, input, ViewChild, outpu
   imports: [],
   template: `
     <dialog #dialog (close)="close()" class="bg-transparent mb-0 mx-0">
-      <div class="space-y-4 rounded-t-lg p-4 pb-0 bg-gray-500 dark:bg-gray-900">
+      <div class="space-y-4 rounded-t-lg p-4 pb-0 bg-secondary-400">
         <header class="flex items-center justify-between">
-          <h4 class="dark:text-white text-black font-bold text-lg">{{ title() }}</h4>
+          <h4 class=" text-secondary-content font-bold text-lg">{{ title() }}</h4>
           <form method="dialog">
             <button class="rounded">
               <svg

@@ -4,19 +4,57 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ComboBoxComponent } from '../combo-box/combo-box.component';
 import { InputComponent } from '../input/input.component';
 import { MobileDialogComponent } from '../mobile-dialog/mobile-dialog.component';
+import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-flights-filter',
-  imports: [CommonModule, InputComponent, ReactiveFormsModule, ComboBoxComponent, MobileDialogComponent],
+  imports: [
+    CommonModule,
+    InputComponent,
+    ReactiveFormsModule,
+    ComboBoxComponent,
+    MobileDialogComponent,
+    ButtonComponent
+  ],
   template: ` <div>
-    <button (click)="dialog.open()">Open dialog</button>
+    <app-button (click)="dialog.open()">Open dialog</app-button>
     <app-mobile-dialog title="Filters" #dialog="mobileDialog">
       <form [formGroup]="formGroup" class="py-4 flex flex-col gap-4" (ngSubmit)="onSubmit()">
-        <app-input type="text" label="Title" inputId="myId" formControlName="title"></app-input>
-        <app-input type="number" label="Min Price" inputId="myId" formControlName="minPrice"></app-input>
-        <app-input type="number" label="Max Price" inputId="myId" formControlName="maxPrice"></app-input>
-        <app-input type="number" label="Min Rating" inputId="myId" formControlName="minRating"></app-input>
-        <app-input type="number" label="Max Rating" inputId="myId" formControlName="maxRating"></app-input>
+        <app-input
+          type="text"
+          placeholder="Enter title"
+          label="Title"
+          inputId="myId"
+          formControlName="title"
+        ></app-input>
+        <app-input
+          type="number"
+          placeholder="Enter min price"
+          label="Min Price"
+          inputId="myId"
+          formControlName="minPrice"
+        ></app-input>
+        <app-input
+          type="number"
+          placeholder="Enter max price"
+          label="Max Price"
+          inputId="myId"
+          formControlName="maxPrice"
+        ></app-input>
+        <app-input
+          type="number"
+          placeholder="Enter min rating"
+          label="Min Rating"
+          inputId="myId"
+          formControlName="minRating"
+        ></app-input>
+        <app-input
+          type="number"
+          placeholder="Enter max rating"
+          label="Max Rating"
+          inputId="myId"
+          formControlName="maxRating"
+        ></app-input>
 
         <app-combo-box
           label="Tags"

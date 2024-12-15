@@ -39,13 +39,15 @@ interface ErrorMessage {
   selector: 'app-validation-errors',
   imports: [],
   template: `
+  @if (errorMessages().length > 0) {
     <ul class="text-red-600 text-sm mt-1 space-y-1">
       @for (error of errorMessages(); track error.key) {
         <li>
           {{ error.value }}
         </li>
       }
-  </ul>`,
+    </ul>
+  }`,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ValidationErrorsComponent {
