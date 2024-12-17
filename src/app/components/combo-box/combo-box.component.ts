@@ -52,13 +52,7 @@ import { ButtonComponent } from "../button/button.component";
                transition-colors duration-200"
               (blur)="markAsTouched()"
             />
-            <app-button
-              variant="secondary"
-              (click)="addTag(newTagInput.value)"
-            >
-              Add
-            </app-button> 
-           
+            <app-button variant="secondary" (click)="addTag(newTagInput.value)"> Add </app-button>
           </div>
           @if (control.touched && control.dirty) {
             <app-validation-errors [customErrorMessages]="customErrorMessages()" [errors]="control.errors">
@@ -67,7 +61,24 @@ import { ButtonComponent } from "../button/button.component";
         </div>
         <div class="flex flex-wrap gap-2">
           @for (tag of tags(); track tag; let i = $index) {
-            <app-tag [id]="i" [label]="tag" (onRemove)="removeTag(i)" />
+            <app-tag [id]="i" [label]="tag">
+              <svg
+                (click)="removeTag(i)"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="hover:scale-105"
+              >
+                <path d="M18 6 6 18" />
+                <path d="M6 6l12 12" />
+              </svg>
+            </app-tag>
           }
         </div>
       </div>

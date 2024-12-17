@@ -19,7 +19,9 @@ export type FlightFilterFields = {
   minRating: number;
   maxRating: number;
   tags: string[];
+  page: number;
+  limit: number;
 };
 export const flightSortByFields: Array<keyof Flight> = ['title', 'price', 'rating', 'creationDate'];
-export const flightFilterFields: Array<keyof FlightFilterFields> = ['title', 'minPrice', 'maxPrice', 'minRating', 'maxRating', 'tags'];
+export const flightFilterFields: Array<keyof FlightFilterFields> = ['title', 'minPrice', 'maxPrice', 'minRating', 'maxRating', 'tags', 'page', 'limit'];
 export const flightSessionKey = 'flightSession';
