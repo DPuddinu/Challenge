@@ -1,7 +1,7 @@
-import { Flight } from "@/models/Flight";
+import { Trip } from '@/models/Trip';
 
 export type FlightResponse = {
-  items: Flight[];
+  items: Trip[];
   total: number;
   limit: number;
   page: number;

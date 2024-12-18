@@ -1,5 +1,5 @@
 export type VerticalType = 'flight' | 'train' | 'car' | 'hotel';
-export interface Flight {
+export interface Trip {
   id: string;
   title: string;
   description: string;
@@ -23,6 +23,15 @@ export type FlightFilterFields = {
   page: number;
   limit: number;
 };
-export const flightSortByFields: Array<keyof Flight> = ['title', 'price', 'rating', 'creationDate'];
-export const flightFilterFields: Array<keyof FlightFilterFields> = ['title', 'minPrice', 'maxPrice', 'minRating', 'maxRating', 'tags', 'page', 'limit'];
+export const flightSortByFields: Array<keyof Trip> = ['title', 'price', 'rating', 'creationDate'];
+export const flightFilterFields: Array<keyof FlightFilterFields> = [
+  'title',
+  'minPrice',
+  'maxPrice',
+  'minRating',
+  'maxRating',
+  'tags',
+  'page',
+  'limit'
+];
 export const flightSessionKey = 'flightSession';

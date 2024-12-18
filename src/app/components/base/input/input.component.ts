@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, ElementRef, forwardRef, input, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { BaseInputComponent } from '../base/base-input.component';
-import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
-import { LabelComponent } from "../label/label.component";
+import { BaseInputComponent } from '@/components/base/base-input.component';
+import { ValidationErrorsComponent } from '@/components/base/validation-errors/validation-errors.component';
+import { LabelComponent } from "@/components/base/label/label.component";
 
 type InputType = 'text' | 'number' | 'email' | 'password';
 

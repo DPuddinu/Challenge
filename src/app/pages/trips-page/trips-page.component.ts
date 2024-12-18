@@ -1,12 +1,14 @@
 import { CardComponent } from '@/components/card/card.component';
-import { IconComponent } from '@/components/icon/icon.component';
-import { TagComponent } from '@/components/tag/tag.component';
-import { Flight } from '@/models/Flight';
+import { IconComponent } from '@/components/base/icon/icon.component';
+import { TagComponent } from '@/components/base/tag/tag.component';
+import { Trip } from '@/models/Trip';
 import { FlightResponse } from '@/services/flightService/flight.types';
 import { calculateScore, TripScore } from '@/utils/tripScore';
 import { CommonModule, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MobileTripsFilterComponent } from '@/components/trips-filter/mobile-trips-filter/mobile-trips-filter.component';
+import { DesktopTripsFilterComponent } from '@/components/trips-filter/desktop-trips-filter/desktop-trips-filter.component';
 
 @Component({
   selector: 'app-trips-page',
@@ -17,57 +19,70 @@ import { ReactiveFormsModule } from '@angular/forms';
     NgOptimizedImage,
     TagComponent,
     IconComponent,
-    NgTemplateOutlet
+    NgTemplateOutlet,
+    MobileTripsFilterComponent,
+    DesktopTripsFilterComponent
   ],
   template: `
-    <div class="grid md:grid-cols-2 gap-4 p-4">
-      <!-- @if (flightsService.flightsResource.isLoading()) {
+    <div class="grid xl:grid-cols-[auto_1fr]">
+      <section class="p-4">
+        <div class="hidden 2xl:block">
+          <app-desktop-trips-filter></app-desktop-trips-filter>
+        </div>
+        <div class="block 2xl:hidden">
+          <app-flights-filter-mobile></app-flights-filter-mobile>
+        </div>
+      </section>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 2xl:grid-cols-4">
+        <!-- @if (flightsService.flightsResource.isLoading()) {
       <div class="text-white">loading...</div>
     }
     @if (flightsService.flightsResource.error()) {
       <div class="text-white">error...</div>
     } -->
-      @for (flight of data.items; track flight.id) {
-        <app-card>
-          <ng-template #cardContent>
-            <div class="grid @md:grid-cols-[max(30%,_200px)_1fr] @md:items-center gap-4">
-              <div class="overflow-hidden rounded-lg aspect-square relative">
-                <img
-                  [ngSrc]="flight.thumbnailUrl"
-                  fill
-                  priority
-                  class="rounded-lg object-contain transition-all duration-300 group-hover:scale-110"
-                  placeholder="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mO89x8AAsEB3+IGkhwAAAAASUVORK5CYII="
-                />
-              </div>
 
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <h4 class="~text-lg/2xl font-semibold w-fit ">{{ flight.title }}</h4>
-                  <ng-container
-                    *ngTemplateOutlet="tierTemplate; context: { $implicit: getTripScore(flight).tier }"
-                  ></ng-container>
-                  <ng-template #tierTemplate let-tier>
-                    <app-icon [class]="tier.color" [name]="'crown'" fill="none" [size]="24" [strokeWidth]="2" />
-                  </ng-template>
+        @for (flight of data.items; track flight.id) {
+          <app-card>
+            <ng-template #cardContent>
+              <div class="grid @md:grid-cols-[max(30%,_200px)_1fr] @md:items-center gap-4">
+                <div class="overflow-hidden rounded-lg aspect-square relative">
+                  <img
+                    [ngSrc]="flight.thumbnailUrl"
+                    fill
+                    priority
+                    class="rounded-lg object-contain transition-all duration-300 group-hover:scale-110"
+                    placeholder="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mO89x8AAsEB3+IGkhwAAAAASUVORK5CYII="
+                  />
                 </div>
-                <div class="flex gap-2 items-center">
-                  <span class="~text-sm/base">{{ flight.verticalType | titlecase }}</span>
-                  <app-icon [name]="flight.verticalType" fill="none" [size]="16" [strokeWidth]="2" />
-                </div>
-                <div class="flex justify-between py-2">
-                  <span class="~text-base/2xl font-semibold">{{ flight.price | currency: 'EUR' }}</span>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                  @for (tag of flight.tags; track tag) {
-                    <app-tag [label]="tag" class="!bg-primary-500 w-fit"></app-tag>
-                  }
+
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between gap-2">
+                    <h4 class="~text-lg/2xl font-semibold w-fit ">{{ flight.title }}</h4>
+                    <ng-container
+                      *ngTemplateOutlet="tierTemplate; context: { $implicit: getTripScore(flight).tier }"
+                    ></ng-container>
+                    <ng-template #tierTemplate let-tier>
+                      <app-icon [class]="tier.color" [name]="'crown'" fill="none" [size]="24" [strokeWidth]="2" />
+                    </ng-template>
+                  </div>
+                  <div class="flex gap-2 items-center">
+                    <span class="~text-sm/base">{{ flight.verticalType | titlecase }}</span>
+                    <app-icon [name]="flight.verticalType" fill="none" [size]="16" [strokeWidth]="2" />
+                  </div>
+                  <div class="flex justify-between py-2">
+                    <span class="~text-base/2xl font-semibold">{{ flight.price | currency: 'EUR' }}</span>
+                  </div>
+                  <div class="flex flex-wrap gap-2">
+                    @for (tag of flight.tags; track tag) {
+                      <app-tag [label]="tag" class="!bg-primary-500 w-fit"></app-tag>
+                    }
+                  </div>
                 </div>
               </div>
-            </div>
-          </ng-template>
-        </app-card>
-      }
+            </ng-template>
+          </app-card>
+        }
+      </div>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -222,9 +237,7 @@ export class TripsPageComponent {
     limit: 10
   };
 
-  getTripScore(flight: Flight): TripScore {
+  getTripScore(flight: Trip): TripScore {
     return calculateScore({ rating: flight.rating, nrOfRatings: flight.nrOfRatings, co2: flight.co2 });
   }
-
-  
 }

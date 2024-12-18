@@ -9,11 +9,11 @@ import {
   Validator,
   Validators
 } from '@angular/forms';
-import { BaseInputComponent } from '../base/base-input.component';
-import { TagComponent } from '../tag/tag.component';
-import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
-import { LabelComponent } from "../label/label.component";
-import { ButtonComponent } from "../button/button.component";
+import { BaseInputComponent } from '@/components/base/base-input.component';
+import { TagComponent } from '@/components/base/tag/tag.component';
+import { ValidationErrorsComponent } from '@/components/base/validation-errors/validation-errors.component';
+import { LabelComponent } from "@/components/base/label/label.component";
+import { ButtonComponent } from "@/components/base/button/button.component";
 
 @Component({
   selector: 'app-combo-box',

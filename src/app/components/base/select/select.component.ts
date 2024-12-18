@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, forwardRef, input } from '@angular/
 import { CommonModule } from '@angular/common';
 import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
-import { BaseInputComponent } from '../base/base-input.component';
+import { BaseInputComponent } from '../base-input.component';
 import { LabelComponent } from '../label/label.component';
 
 @Component({
