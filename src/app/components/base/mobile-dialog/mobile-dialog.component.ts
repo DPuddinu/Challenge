@@ -33,7 +33,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, input, ViewChild, outpu
       --animation-duration: 0.3s;
       will-change: transform;
       width: 100vw;
-      max-width: 100vw;
+      max-width: 100%;
       transform: translateY(100%);
       transition:
         transform var(--animation-duration) ease-in-out,

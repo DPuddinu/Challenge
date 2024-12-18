@@ -19,7 +19,6 @@ export class ViewportService {
     '2xl': '(min-width: 1536px)'
   } as const;
 
-  // Signal-based solution
   private readonly breakpointState = signal<Record<string, boolean>>({});
 
   readonly isSmall = computed(() => this.breakpointState()[this.customBreakpoints.sm]);
@@ -37,7 +36,6 @@ export class ViewportService {
   });
 
   constructor() {
-    // Initialize breakpoint observer
     this.breakpointObserver
       .observe(Object.values(this.customBreakpoints))
       .pipe(takeUntilDestroyed())

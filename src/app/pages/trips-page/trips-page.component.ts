@@ -1,14 +1,16 @@
-import { CardComponent } from '@/components/card/card.component';
 import { IconComponent } from '@/components/base/icon/icon.component';
 import { TagComponent } from '@/components/base/tag/tag.component';
+import { CardComponent } from '@/components/card/card.component';
 import { Trip } from '@/models/Trip';
 import { FlightResponse } from '@/services/flightService/flight.types';
+import { ViewportService } from '@/services/viewport/viewport.service';
 import { calculateScore, TripScore } from '@/utils/tripScore';
 import { CommonModule, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MobileTripsFilterComponent } from '@/components/trips-filter/mobile-trips-filter/mobile-trips-filter.component';
-import { DesktopTripsFilterComponent } from '@/components/trips-filter/desktop-trips-filter/desktop-trips-filter.component';
+import { ButtonComponent } from "@/components/base/button/button.component";
+import { MobileDialogComponent } from "@/components/base/mobile-dialog/mobile-dialog.component";
+import { BaseTripsFiltersComponent } from "@/components/trips-filter/base-trips-filter/base-trips-filters/base-trips-filters.component";
 
 @Component({
   selector: 'app-trips-page',
@@ -20,20 +22,34 @@ import { DesktopTripsFilterComponent } from '@/components/trips-filter/desktop-t
     TagComponent,
     IconComponent,
     NgTemplateOutlet,
-    MobileTripsFilterComponent,
-    DesktopTripsFilterComponent
+    ButtonComponent,
+    MobileDialogComponent,
+    BaseTripsFiltersComponent
   ],
   template: `
-    <div class="grid xl:grid-cols-[auto_1fr]">
-      <section class="p-4">
-        <div class="hidden 2xl:block">
-          <app-desktop-trips-filter></app-desktop-trips-filter>
-        </div>
-        <div class="block 2xl:hidden">
-          <app-flights-filter-mobile></app-flights-filter-mobile>
-        </div>
+    <div class="grid lg:grid-cols-[20%_1fr]">
+      <section class="p-4 grid lg:bg-secondary-700">
+        @if (viewportService.isLarge()) {
+          @defer (on viewport(tripsContainer)) {
+            <aside class="space-y-4">
+              <h3 class="text-secondary-content font-bold text-lg text-white">Filters</h3>
+              <app-base-trips-filters></app-base-trips-filters>
+            </aside>
+          } @placeholder (minimum 300) {
+            <div class="h-full w-full rounded animate-pulse bg-secondary-400"></div>
+          }
+        } @else {
+          @defer (on viewport) {
+            <app-button (click)="dialog.open()">Filters</app-button>
+            <app-mobile-dialog title="Filters" #dialog="mobileDialog">
+              <app-base-trips-filters></app-base-trips-filters>
+            </app-mobile-dialog>
+          } @placeholder (minimum 300) {
+            <div class="h-full w-full rounded animate-pulse bg-secondary-400"></div>
+          }
+        }
       </section>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 2xl:grid-cols-4">
+      <section #tripsContainer class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 2xl:grid-cols-4">
         <!-- @if (flightsService.flightsResource.isLoading()) {
       <div class="text-white">loading...</div>
     }
@@ -44,7 +60,7 @@ import { DesktopTripsFilterComponent } from '@/components/trips-filter/desktop-t
         @for (flight of data.items; track flight.id) {
           <app-card>
             <ng-template #cardContent>
-              <div class="grid @md:grid-cols-[max(30%,_200px)_1fr] @md:items-center gap-4">
+              <div class="grid @sm:grid-cols-[max(30%,_200px)_1fr] @sm:items-center gap-4">
                 <div class="overflow-hidden rounded-lg aspect-square relative">
                   <img
                     [ngSrc]="flight.thumbnailUrl"
@@ -82,12 +98,13 @@ import { DesktopTripsFilterComponent } from '@/components/trips-filter/desktop-t
             </ng-template>
           </app-card>
         }
-      </div>
+      </section>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TripsPageComponent {
+  viewportService = inject(ViewportService);
   // flightsService = inject(FlightService);
   data: FlightResponse = {
     items: [
