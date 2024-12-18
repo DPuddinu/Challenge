@@ -1,16 +1,24 @@
 import { CardComponent } from '@/components/card/card.component';
 import { IconComponent } from '@/components/icon/icon.component';
 import { TagComponent } from '@/components/tag/tag.component';
-import { Flight, VerticalType } from '@/models/Flight';
+import { Flight } from '@/models/Flight';
 import { FlightResponse } from '@/services/flightService/flight.types';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { calculateScore, TripScore } from '@/utils/tripScore';
+import { CommonModule, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { calculateScore, TripScore } from '@/utils/tripScore';
-import { iconClassMap } from '@/components/icon/icon.constants';
+
 @Component({
   selector: 'app-trips-page',
-  imports: [CommonModule, ReactiveFormsModule, CardComponent, NgOptimizedImage, TagComponent, IconComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    CardComponent,
+    NgOptimizedImage,
+    TagComponent,
+    IconComponent,
+    NgTemplateOutlet
+  ],
   template: `
     <div class="grid md:grid-cols-2 gap-4 p-4">
       <!-- @if (flightsService.flightsResource.isLoading()) {
@@ -22,7 +30,7 @@ import { iconClassMap } from '@/components/icon/icon.constants';
       @for (flight of data.items; track flight.id) {
         <app-card>
           <ng-template #cardContent>
-            <div class="@md:grid @md:grid-cols-[max(30%,_200px)_1fr] @md:items-center @md:gap-4">
+            <div class="grid @md:grid-cols-[max(30%,_200px)_1fr] @md:items-center gap-4">
               <div class="overflow-hidden rounded-lg aspect-square relative">
                 <img
                   [ngSrc]="flight.thumbnailUrl"
@@ -34,24 +42,26 @@ import { iconClassMap } from '@/components/icon/icon.constants';
               </div>
 
               <div class="space-y-2">
-                <h4 class="~text-lg/2xl font-semibold w-fit ">{{ flight.title }}</h4>
+                <div class="flex items-center justify-between gap-2">
+                  <h4 class="~text-lg/2xl font-semibold w-fit ">{{ flight.title }}</h4>
+                  <ng-container
+                    *ngTemplateOutlet="tierTemplate; context: { $implicit: getTripScore(flight).tier }"
+                  ></ng-container>
+                  <ng-template #tierTemplate let-tier>
+                    <app-icon [class]="tier.color" [name]="'crown'" fill="none" [size]="24" [strokeWidth]="2" />
+                  </ng-template>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <span class="~text-sm/base">{{ flight.verticalType | titlecase }}</span>
+                  <app-icon [name]="flight.verticalType" fill="none" [size]="16" [strokeWidth]="2" />
+                </div>
                 <div class="flex justify-between py-2">
                   <span class="~text-base/2xl font-semibold">{{ flight.price | currency: 'EUR' }}</span>
-                  <app-icon
-                    [class]="getIconClass(flight.verticalType)"
-                    [name]="flight.verticalType"
-                    fill="none"
-                    [size]="24"
-                    [strokeWidth]="2"
-                  />
                 </div>
                 <div class="flex flex-wrap gap-2">
                   @for (tag of flight.tags; track tag) {
-                    <app-tag [id]="tag" [label]="tag" class="!bg-primary-500 w-fit"></app-tag>
+                    <app-tag [label]="tag" class="!bg-primary-500 w-fit"></app-tag>
                   }
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="~text-sm/base opacity-75">{{ getTripScore(flight).tier.label }}</span>
                 </div>
               </div>
             </div>
@@ -216,7 +226,5 @@ export class TripsPageComponent {
     return calculateScore({ rating: flight.rating, nrOfRatings: flight.nrOfRatings, co2: flight.co2 });
   }
 
-  getIconClass(type: VerticalType): string {
-    return iconClassMap[type] || 'text-primary-300';
-  }
+  
 }

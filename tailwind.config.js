@@ -42,6 +42,21 @@ module.exports = {
           950: 'var(--secondary-950)',
           content: 'var(--secondary-content)'
         },
+        gold: {
+          DEFAULT: '#FFD700',
+          light: '#FFF2B2',
+          dark: '#B7950B'
+        },
+        silver: {
+          DEFAULT: '#C0C0C0',
+          light: '#E8E8E8',
+          dark: '#808080'
+        },
+        bronze: {
+          DEFAULT: '#CD7F32',
+          light: '#DBA878',
+          dark: '#8B4513'
+        },
         background: 'var(--background)',
         foreground: 'var(--foreground)'
       },

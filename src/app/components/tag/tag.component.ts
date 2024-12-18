@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   selector: 'app-tag',
   imports: [],
   template: `
-    <div>
+    <div class="flex items-center gap-2">
       {{ label() }}
       <ng-content></ng-content>
     </div>

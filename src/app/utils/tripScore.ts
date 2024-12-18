@@ -31,17 +31,17 @@ export function calculateScore({ rating, nrOfRatings, co2 }: Pick<Flight, 'ratin
         case score >= 80:
           return {
             label: 'awesome',
-            color: 'bg-green-500'
+            color: 'text-gold'
           };
         case score >= 60:
           return {
             label: 'good',
-            color: 'bg-yellow-500'
+            color: 'text-silver'
           };
         default:
           return {
             label: 'average',
-            color: 'bg-gray-500'
+            color: 'text-bronze'
           };
       }
     }
