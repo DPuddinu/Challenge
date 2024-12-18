@@ -1,17 +1,12 @@
 import { Injectable, resource } from '@angular/core';
-import { BaseQueryParamsService } from './shared/baseQueryParams.service';
-import { Flight, FlightFilterFields } from '@/models/Flight';
+import { BaseQueryParamsService } from '../shared/baseQueryParams.service';
+import { FlightFilterFields } from '@/models/Flight';
 import { environment } from 'environments/environment.dev';
+import type { FlightResponse } from './flight.types';
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
 
-type FlightResponse = {
-  items: Flight[];
-  total: number;
-  limit: number;
-  page: number;
-};
 
 @Injectable({
   providedIn: 'root'

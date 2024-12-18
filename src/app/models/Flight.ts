@@ -1,3 +1,4 @@
+export type VerticalType = 'flight' | 'train' | 'car' | 'hotel';
 export interface Flight {
   id: string;
   title: string;
@@ -5,7 +6,7 @@ export interface Flight {
   price: number;
   rating: number;
   nrOfRatings: number;
-  verticalType: string;
+  verticalType: VerticalType;
   tags: string[];
   co2: number;
   thumbnailUrl: string;

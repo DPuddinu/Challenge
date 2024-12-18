@@ -26,6 +26,7 @@
     "@angular/pwa": "^19.0.4",
     "@angular/router": "^19.0.3",
     "@angular/service-worker": "^19.0.3",
+    "@tailwindcss/container-queries": "^0.1.1",
     "rxjs": "~7.8.1",
     "tslib": "^2.3.1",
     "zone.js": "~0.15.0"

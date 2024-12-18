@@ -5,7 +5,7 @@ import { Component, ContentChild, input, TemplateRef } from '@angular/core';
   selector: 'app-card',
   imports: [NgTemplateOutlet],
   template: `
-    <div class="p-4 rounded bg-secondary-700 space-y-4">
+    <div class="p-4 rounded bg-secondary-600 hover:cursor-pointer hover:bg-secondary-500 transition-colors duration-200 hover:shadow shadow-secondary-700 @container grid group">
       <ng-container *ngTemplateOutlet="cardContent || defaultCardTemplate; context: { $implicit: data }"></ng-container>
     </div>
 

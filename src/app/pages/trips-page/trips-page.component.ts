@@ -1,26 +1,18 @@
-import { FlightsFilterComponent } from '@/components/flights-filter/flights-filter.component';
-import { CommonModule } from '@angular/common';
+import { CardComponent } from '@/components/card/card.component';
+import { IconComponent } from '@/components/icon/icon.component';
+import { TagComponent } from '@/components/tag/tag.component';
+import { Flight, VerticalType } from '@/models/Flight';
+import { FlightResponse } from '@/services/flightService/flight.types';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CardComponent } from '@/components/card/card.component';
-import { NgOptimizedImage } from '@angular/common';
-import { StarComponent } from '../../components/star/star.component';
-import { ParenthesisPipe } from '@/shared/pipes/parenthesis.pipe';
-
+import { calculateScore, TripScore } from '@/utils/tripScore';
+import { iconClassMap } from '@/components/icon/icon.constants';
 @Component({
   selector: 'app-trips-page',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FlightsFilterComponent,
-    CardComponent,
-    NgOptimizedImage,
-    StarComponent,
-    ParenthesisPipe
-  ],
+  imports: [CommonModule, ReactiveFormsModule, CardComponent, NgOptimizedImage, TagComponent, IconComponent],
   template: `
-    <div class="flex flex-col gap-4 p-4">
-      <app-flights-filter />
+    <div class="grid md:grid-cols-2 gap-4 p-4">
       <!-- @if (flightsService.flightsResource.isLoading()) {
       <div class="text-white">loading...</div>
     }
@@ -30,31 +22,36 @@ import { ParenthesisPipe } from '@/shared/pipes/parenthesis.pipe';
       @for (flight of data.items; track flight.id) {
         <app-card>
           <ng-template #cardContent>
-            <div class="grid grid-cols-[auto_1fr] gap-4">
-              <div class="overflow-hidden rounded-lg aspect-square h-full relative">
+            <div class="@md:grid @md:grid-cols-[max(30%,_200px)_1fr] @md:items-center @md:gap-4">
+              <div class="overflow-hidden rounded-lg aspect-square relative">
                 <img
-                  ngSrc="{{ flight.thumbnailUrl }}"
+                  [ngSrc]="flight.thumbnailUrl"
                   fill
                   priority
-                  class="rounded-lg object-contain"
+                  class="rounded-lg object-contain transition-all duration-300 group-hover:scale-110"
                   placeholder="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mO89x8AAsEB3+IGkhwAAAAASUVORK5CYII="
                 />
               </div>
 
-              <div class="grow">
-                <div>
-                  <h4 class="text-lg font-semibold text-secondary-200">{{ flight.title }}</h4>
-                  <p class="text-sm text-secondary-400">{{ flight.description }}</p>
-                </div>
+              <div class="space-y-2">
+                <h4 class="~text-lg/2xl font-semibold w-fit ">{{ flight.title }}</h4>
                 <div class="flex justify-between py-2">
-                  <div>
-                    <span class="text-secondary-200 text-lg font-semibold">{{ flight.price | currency: 'EUR' }}</span>
-                  </div>
-                  <div class="flex items-center gap-2 ">
-                    <star></star>
-                    <span class="text-secondary-200">{{ flight.rating }}</span>
-                    <span class="text-secondary-200">{{ flight.nrOfRatings | parenthesis }}</span>
-                  </div>
+                  <span class="~text-base/2xl font-semibold">{{ flight.price | currency: 'EUR' }}</span>
+                  <app-icon
+                    [class]="getIconClass(flight.verticalType)"
+                    [name]="flight.verticalType"
+                    fill="none"
+                    [size]="24"
+                    [strokeWidth]="2"
+                  />
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  @for (tag of flight.tags; track tag) {
+                    <app-tag [id]="tag" [label]="tag" class="!bg-primary-500 w-fit"></app-tag>
+                  }
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="~text-sm/base opacity-75">{{ getTripScore(flight).tier.label }}</span>
                 </div>
               </div>
             </div>
@@ -67,7 +64,7 @@ import { ParenthesisPipe } from '@/shared/pipes/parenthesis.pipe';
 })
 export class TripsPageComponent {
   // flightsService = inject(FlightService);
-  data = {
+  data: FlightResponse = {
     items: [
       {
         id: '57be77a0-a37f-44f9-902d-445d78d781ee',
@@ -81,7 +78,7 @@ export class TripsPageComponent {
         co2: 297.8,
         thumbnailUrl: 'https://picsum.photos/id/511/200/200',
         imageUrl: 'https://picsum.photos/id/511/600/800',
-        creationDate: '2024-10-20T19:40:20.747Z'
+        creationDate: new Date('2024-10-20T19:40:20.747Z')
       },
       {
         id: '3fd26f38-f077-4eb2-935d-aec6b650dfe9',
@@ -95,7 +92,7 @@ export class TripsPageComponent {
         co2: 156.8,
         thumbnailUrl: 'https://picsum.photos/id/339/200/200',
         imageUrl: 'https://picsum.photos/id/339/600/800',
-        creationDate: '2024-10-20T19:40:20.761Z'
+        creationDate: new Date('2024-10-20T19:40:20.761Z')
       },
       {
         id: 'ad34a7c8-a483-4376-80a6-e02c85a6a0d9',
@@ -109,7 +106,7 @@ export class TripsPageComponent {
         co2: 600.3,
         thumbnailUrl: 'https://picsum.photos/id/120/200/200',
         imageUrl: 'https://picsum.photos/id/120/600/800',
-        creationDate: '2024-10-20T19:40:20.766Z'
+        creationDate: new Date('2024-10-20T19:40:20.766Z')
       },
       {
         id: '45151481-434b-47c9-b96f-6b4cc74c05fb',
@@ -123,7 +120,7 @@ export class TripsPageComponent {
         co2: 207.7,
         thumbnailUrl: 'https://picsum.photos/id/404/200/200',
         imageUrl: 'https://picsum.photos/id/404/600/800',
-        creationDate: '2024-10-20T19:40:20.771Z'
+        creationDate: new Date('2024-10-20T19:40:20.771Z')
       },
       {
         id: '9e0b3ef4-cd99-44ac-8912-bd772b379d25',
@@ -137,7 +134,7 @@ export class TripsPageComponent {
         co2: 656.4,
         thumbnailUrl: 'https://picsum.photos/id/456/200/200',
         imageUrl: 'https://picsum.photos/id/456/600/800',
-        creationDate: '2024-10-20T19:40:20.776Z'
+        creationDate: new Date('2024-10-20T19:40:20.776Z')
       },
       {
         id: 'd12fd2ee-7077-48eb-a98b-036c605c186b',
@@ -151,7 +148,7 @@ export class TripsPageComponent {
         co2: 760.6,
         thumbnailUrl: 'https://picsum.photos/id/559/200/200',
         imageUrl: 'https://picsum.photos/id/559/600/800',
-        creationDate: '2024-10-20T19:40:20.781Z'
+        creationDate: new Date('2024-10-20T19:40:20.781Z')
       },
       {
         id: '48c019d7-afda-4dcd-8359-499cd5befb6f',
@@ -165,7 +162,7 @@ export class TripsPageComponent {
         co2: 208.7,
         thumbnailUrl: 'https://picsum.photos/id/272/200/200',
         imageUrl: 'https://picsum.photos/id/272/600/800',
-        creationDate: '2024-10-20T19:40:20.786Z'
+        creationDate: new Date('2024-10-20T19:40:20.786Z')
       },
       {
         id: '5062a516-44b7-4b4b-a3b1-9ec0d33cb685',
@@ -179,7 +176,7 @@ export class TripsPageComponent {
         co2: 834.7,
         thumbnailUrl: 'https://picsum.photos/id/544/200/200',
         imageUrl: 'https://picsum.photos/id/544/600/800',
-        creationDate: '2024-10-20T19:40:20.792Z'
+        creationDate: new Date('2024-10-20T19:40:20.792Z')
       },
       {
         id: 'c70640be-5578-43ba-ad35-acd481841764',
@@ -193,7 +190,7 @@ export class TripsPageComponent {
         co2: 933.5,
         thumbnailUrl: 'https://picsum.photos/id/282/200/200',
         imageUrl: 'https://picsum.photos/id/282/600/800',
-        creationDate: '2024-10-20T19:40:20.799Z'
+        creationDate: new Date('2024-10-20T19:40:20.799Z')
       },
       {
         id: 'd6fbf01e-5059-4ba2-b6c6-bc4baa3c4889',
@@ -207,11 +204,19 @@ export class TripsPageComponent {
         co2: 83.3,
         thumbnailUrl: 'https://picsum.photos/id/701/200/200',
         imageUrl: 'https://picsum.photos/id/701/600/800',
-        creationDate: '2024-10-20T19:40:20.806Z'
+        creationDate: new Date('2024-10-20T19:40:20.806Z')
       }
     ],
     total: 1011,
     page: 1,
     limit: 10
   };
+
+  getTripScore(flight: Flight): TripScore {
+    return calculateScore({ rating: flight.rating, nrOfRatings: flight.nrOfRatings, co2: flight.co2 });
+  }
+
+  getIconClass(type: VerticalType): string {
+    return iconClassMap[type] || 'text-primary-300';
+  }
 }
