@@ -1,5 +1,5 @@
 import { FormGroupAccessorDirective } from '@/directives/form-group-accessor.directive';
-import { ChangeDetectionStrategy, Component, computed, effect, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { LabelComponent } from '../label/label.component';
@@ -22,12 +22,6 @@ import { ValidationErrorsComponent } from '../validation-errors/validation-error
           <app-label [text]="label()" [for]="id()" />
         }
         <div class="relative pt-1">
-          <div
-            class="absolute h-2 bg-primary-500 rounded-lg"
-            [style.left]="selectedRangeLeft()"
-            [style.width]="selectedRangeWidth()"
-            style="top: 0.25rem;"
-          ></div>
 
           <div class="relative h-2 bg-secondary-600 rounded-lg">
             <input
@@ -94,7 +88,6 @@ export class SliderComponent extends FormGroupAccessorDirective<{ min: number; m
           this.formGroup.get('min')?.setValue(maxVal, { emitEvent: false });
         }
         if (maxVal < minVal) {
-          // console.log('1234');
           this.formGroup.get('max')?.setValue(minVal, { emitEvent: false });
         }
       }
@@ -108,33 +101,6 @@ export class SliderComponent extends FormGroupAccessorDirective<{ min: number; m
   get maxControl() {
     return this.formGroup?.get('max') as FormControl;
   }
-  
- 
-  selectedRangeLeft = computed(() => {
-    const currentMin = this.minValue() ?? this.min();
-    const range = this.max() - this.min();
-    const relativePosition = currentMin - this.min();
-    const percentage = (relativePosition / range) * 100;
-
-    return `${percentage}%`;
-  });
-
-  selectedRangeWidth = computed(() => {
-    const range = this.max() - this.min();
-
-    // Calculate left position percentage
-    const currentMin = this.minValue() ?? this.min();
-    const minRelativePosition = currentMin - this.min();
-    const minPercentage = (minRelativePosition / range) * 100;
-
-    // Calculate right position percentage
-    const currentMax = this.maxValue() ?? this.max();
-    const maxRelativePosition = currentMax - this.min();
-    const maxPercentage = (maxRelativePosition / range) * 100;
-
-    // Width is the difference between max and min positions
-    return `${maxPercentage - minPercentage}%`;
-  });
 
   protected readonly rangeInputClass = `absolute w-full h-2 appearance-none bg-transparent
     disabled:opacity-50 disabled:cursor-not-allowed
