@@ -25,22 +25,13 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
       formControlName="maxPrice"
     ></app-input>
     <app-slider
-      label="Min Rating"
+      label="Rating"
       id="myId"
       formControlName="minRating"
       [min]="0"
       [max]="5"
       [step]="1"
     ></app-slider>
-    <app-slider
-      label="Max Rating"
-      id="myId"
-      formControlName="maxRating"
-      [min]="0"
-      [max]="5"
-      [step]="1"
-    ></app-slider>
-    
 
     <app-combo-box
       label="Tags"
