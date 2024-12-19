@@ -11,6 +11,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ButtonComponent } from "@/components/base/button/button.component";
 import { MobileDialogComponent } from "@/components/base/mobile-dialog/mobile-dialog.component";
 import { BaseTripsFiltersComponent } from "@/components/trips-filter/base-trips-filter/base-trips-filters/base-trips-filters.component";
+import { FlightService } from '@/services/flightService/flight.service';
 
 @Component({
   selector: 'app-trips-page',
@@ -28,10 +29,10 @@ import { BaseTripsFiltersComponent } from "@/components/trips-filter/base-trips-
   ],
   template: `
     <div class="grid lg:grid-cols-[20%_1fr]">
-      <section class="p-4 grid lg:bg-secondary-700">
+      <section class="p-4 grid lg:bg-secondary-700 relative">
         @if (viewportService.isLarge()) {
           @defer (on viewport(tripsContainer)) {
-            <aside class="space-y-4">
+            <aside class="space-y-4 sticky top-0">
               <h3 class="text-secondary-content font-bold text-lg text-white">Filters</h3>
               <app-base-trips-filters></app-base-trips-filters>
             </aside>
@@ -49,7 +50,7 @@ import { BaseTripsFiltersComponent } from "@/components/trips-filter/base-trips-
           }
         }
       </section>
-      <section #tripsContainer class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 2xl:grid-cols-4">
+      <section #tripsContainer class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 2xl:grid-cols-4 overflow-auto max-h-dvh">
         <!-- @if (flightsService.flightsResource.isLoading()) {
       <div class="text-white">loading...</div>
     }
@@ -74,9 +75,7 @@ import { BaseTripsFiltersComponent } from "@/components/trips-filter/base-trips-
                 <div class="space-y-2">
                   <div class="flex items-center justify-between gap-2">
                     <h4 class="~text-lg/2xl font-semibold w-fit ">{{ flight.title }}</h4>
-                    <ng-container
-                      *ngTemplateOutlet="tierTemplate; context: { $implicit: getTripScore(flight).tier }"
-                    ></ng-container>
+                    <ng-container *ngTemplateOutlet="tierTemplate; context: { $implicit: getTripScore(flight).tier }" ></ng-container>
                     <ng-template #tierTemplate let-tier>
                       <app-icon [class]="tier.color" [name]="'crown'" fill="none" [size]="24" [strokeWidth]="2" />
                     </ng-template>
@@ -105,7 +104,8 @@ import { BaseTripsFiltersComponent } from "@/components/trips-filter/base-trips-
 })
 export class TripsPageComponent {
   viewportService = inject(ViewportService);
-  // flightsService = inject(FlightService);
+  flightsService = inject(FlightService);
+
   data: FlightResponse = {
     items: [
       {

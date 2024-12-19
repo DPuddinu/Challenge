@@ -1,15 +1,16 @@
 import { signal } from '@angular/core';
 
-export abstract class BaseQueryParamsService<T, K> {
-  protected queryParams = signal<T | null>(null);
+type TQueryParamValue = string | string[] | number | number[] | boolean | boolean[];
+type TQueryParams = Record<string, TQueryParamValue>;
+
+export abstract class BaseQueryParamsService<K> {
+  protected queryParams = signal<TQueryParams | null>(null);
 
   protected constructor(protected readonly storageKey: string) {
     this.queryParams.set(this.getStoredQueryParams());
   }
 
-  protected getQueryParamsString(
-    queryParams: Record<string, string | string[] | number | number[] | boolean | boolean[]>
-  ) {
+  protected getQueryParamsString(queryParams: Record<string, TQueryParamValue>) {
     const queryParamsString = Object.entries(queryParams)
       .map(([key, value]) => {
         const paramValue = Array.isArray(value) ? value.join(',') : value;
@@ -23,19 +24,27 @@ export abstract class BaseQueryParamsService<T, K> {
     return this.queryParams();
   }
 
-  protected setQueryParams(params: T) {
+  protected setQueryParam(key: keyof TQueryParams, value: TQueryParamValue) {
+    const currentParams = this.getQueryParams();
+    if (currentParams) {
+      currentParams[key] = value;
+      this.setQueryParams(currentParams);
+    }
+  }
+
+  protected setQueryParams(params: TQueryParams) {
     this.queryParams.set(params);
     this.setStoredQueryParams(params);
   }
 
-  protected getStoredQueryParams(): T | null {
+  protected getStoredQueryParams(): TQueryParams | null {
     const stored = sessionStorage.getItem(this.storageKey);
     return stored ? JSON.parse(stored) : null;
   }
 
-  protected setStoredQueryParams(params: T): void {
+  protected setStoredQueryParams(params: TQueryParams): void {
     sessionStorage.setItem(this.storageKey, JSON.stringify(params));
   }
 
-  protected abstract fetchData(queryParams: T | null, abortSignal: AbortSignal): K;
+  protected abstract fetchData(queryParams: TQueryParams | null, abortSignal: AbortSignal): K;
 }

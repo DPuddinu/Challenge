@@ -10,7 +10,7 @@ const DEFAULT_LIMIT = 10;
 @Injectable({
   providedIn: 'root'
 })
-export class FlightService extends BaseQueryParamsService<Partial<FlightFilterFields>, Promise<FlightResponse>> {
+export class FlightService extends BaseQueryParamsService<Promise<FlightResponse>> {
   flightsResource = resource({
     request: () => this.getQueryParams(),
     loader: ({ request, abortSignal }) => this.fetchData(request, abortSignal)

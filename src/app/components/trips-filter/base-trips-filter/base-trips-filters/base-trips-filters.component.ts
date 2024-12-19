@@ -1,11 +1,12 @@
 import { ComboBoxComponent } from '@/components/base/combo-box/combo-box.component';
 import { InputComponent } from '@/components/base/input/input.component';
+import { SliderComponent } from '@/components/base/slider/slider.component';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-base-trips-filters',
-  imports: [ReactiveFormsModule, InputComponent, ComboBoxComponent],
+  imports: [ReactiveFormsModule, InputComponent, ComboBoxComponent, SliderComponent],
   template: `
   <form [formGroup]="formGroup" class="py-4 flex flex-col gap-4" (ngSubmit)="onSubmit()">
     <app-input type="text" placeholder="Enter title" label="Title" inputId="myId" formControlName="title"></app-input>
@@ -13,30 +14,33 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
       type="number"
       placeholder="Enter min price"
       label="Min Price"
-      inputId="myId"
+      id="myId"
       formControlName="minPrice"
     ></app-input>
     <app-input
       type="number"
       placeholder="Enter max price"
       label="Max Price"
-      inputId="myId"
+      id="myId"
       formControlName="maxPrice"
     ></app-input>
-    <app-input
-      type="number"
-      placeholder="Enter min rating"
+    <app-slider
       label="Min Rating"
-      inputId="myId"
+      id="myId"
       formControlName="minRating"
-    ></app-input>
-    <app-input
-      type="number"
-      placeholder="Enter max rating"
+      [min]="0"
+      [max]="5"
+      [step]="1"
+    ></app-slider>
+    <app-slider
       label="Max Rating"
-      inputId="myId"
+      id="myId"
       formControlName="maxRating"
-    ></app-input>
+      [min]="0"
+      [max]="5"
+      [step]="1"
+    ></app-slider>
+    
 
     <app-combo-box
       label="Tags"

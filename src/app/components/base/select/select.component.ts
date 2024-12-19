@@ -15,7 +15,8 @@ import { LabelComponent } from '../label/label.component';
     }
   ],
   imports: [CommonModule, ReactiveFormsModule, ValidationErrorsComponent, LabelComponent],
-  template: ` @if (control) {
+  template: `
+  @if (control) {
     <div>
       <app-label [text]="label()" [for]="id()"></app-label>
 

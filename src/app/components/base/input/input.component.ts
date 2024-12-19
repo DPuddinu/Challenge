@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, ElementRef, forwardRef, input, ViewChild } from '@angular/core';
-import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { BaseInputComponent } from '@/components/base/base-input.component';
-import { ValidationErrorsComponent } from '@/components/base/validation-errors/validation-errors.component';
 import { LabelComponent } from "@/components/base/label/label.component";
+import { ValidationErrorsComponent } from '@/components/base/validation-errors/validation-errors.component';
+import { ChangeDetectionStrategy, Component, forwardRef, input } from '@angular/core';
+import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 
 type InputType = 'text' | 'number' | 'email' | 'password';
 
@@ -46,6 +46,5 @@ type InputType = 'text' | 'number' | 'email' | 'password';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InputComponent<T> extends BaseInputComponent<T> {
-  @ViewChild('input') input!: ElementRef;
   type = input.required<InputType>();
 }
