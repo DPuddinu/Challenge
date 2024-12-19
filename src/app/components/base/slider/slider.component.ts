@@ -1,5 +1,6 @@
 import { FormGroupAccessorDirective } from '@/directives/form-group-accessor.directive';
 import { ChangeDetectionStrategy, Component, computed, effect, input } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { LabelComponent } from '../label/label.component';
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
@@ -49,7 +50,7 @@ import { ValidationErrorsComponent } from '../validation-errors/validation-error
         </div>
 
         <div class="flex justify-between mt-2 text-sm text-secondary-950">
-          <span>Min: {{ minValue() }}</span>
+          <span >Min: {{ minValue() }}</span>
           <span>Max: {{ maxValue() }}</span>
         </div>
 
@@ -71,8 +72,8 @@ export class SliderComponent extends FormGroupAccessorDirective<{ min: number; m
   id = input<string>('');
   customErrorMessages = input<Record<string, string>>({});
 
-  minValue = computed(() => this.formGroup?.get('min')?.value ?? this.min());
-  maxValue = computed(() => this.formGroup?.get('max')?.value ?? this.max());
+  minValue;
+  maxValue;
 
   constructor() {
     super();
@@ -81,6 +82,9 @@ export class SliderComponent extends FormGroupAccessorDirective<{ min: number; m
       min: new FormControl(),
       max: new FormControl()
     });
+
+    this.minValue = toSignal(this.formGroup.get('min')!.valueChanges);
+    this.maxValue = toSignal(this.formGroup.get('max')!.valueChanges);
 
     effect(() => {
       const minVal = this.minValue();
