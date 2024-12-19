@@ -32,8 +32,8 @@ import { FlightService } from '@/services/flightService/flight.service';
       <section class="p-4 grid lg:bg-secondary-700 relative">
         @if (viewportService.isLarge()) {
           @defer (on viewport(tripsContainer)) {
-            <aside class="space-y-4 sticky top-0">
-              <h3 class="text-secondary-content font-bold text-lg text-white">Filters</h3>
+            <aside class="space-y-4">
+              <h3 class="text-secondary-content font-bold text-lg">Filters</h3>
               <app-base-trips-filters></app-base-trips-filters>
             </aside>
           } @placeholder (minimum 300) {
@@ -50,7 +50,7 @@ import { FlightService } from '@/services/flightService/flight.service';
           }
         }
       </section>
-      <section #tripsContainer class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 2xl:grid-cols-4 overflow-auto max-h-dvh">
+      <section #tripsContainer class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 2xl:grid-cols-4 overflow-hidden">
         <!-- @if (flightsService.flightsResource.isLoading()) {
       <div class="text-white">loading...</div>
     }

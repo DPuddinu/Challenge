@@ -7,31 +7,23 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-base-trips-filters',
   imports: [ReactiveFormsModule, InputComponent, ComboBoxComponent, SliderComponent],
-  template: `
-  <form [formGroup]="formGroup" class="py-4 flex flex-col gap-4" (ngSubmit)="onSubmit()">
-    <app-input type="text" placeholder="Enter title" label="Title" inputId="myId" formControlName="title"></app-input>
+  template: ` <form [formGroup]="formGroup" class="py-4 flex flex-col gap-4" (ngSubmit)="onSubmit()">
+    <app-input type="text" placeholder="Enter title" label="Title" inputId="title" formControlName="title"></app-input>
     <app-input
       type="number"
       placeholder="Enter min price"
       label="Min Price"
-      id="myId"
+      id="minPrice"
       formControlName="minPrice"
     ></app-input>
     <app-input
       type="number"
       placeholder="Enter max price"
       label="Max Price"
-      id="myId"
+      id="maxPrice"
       formControlName="maxPrice"
     ></app-input>
-    <app-slider
-      label="Rating"
-      id="myId"
-      formControlName="minRating"
-      [min]="0"
-      [max]="5"
-      [step]="1"
-    ></app-slider>
+    <app-slider label="Rating" formControlName="ratingRange" [min]="0" [max]="5" [step]="1"></app-slider>
 
     <app-combo-box
       label="Tags"
@@ -52,14 +44,17 @@ export class BaseTripsFiltersComponent {
     title: new FormControl(),
     minPrice: new FormControl(),
     maxPrice: new FormControl(),
-    minRating: new FormControl(),
-    maxRating: new FormControl(),
+    ratingRange: new FormControl({
+      min: 1,
+      max: 3
+    }),
     tags: new FormControl([]),
     page: new FormControl(1),
     limit: new FormControl(10)
   });
 
   onSubmit() {
+    console.log(this.formGroup.value);
     // TODO: Implement submit logic
   }
 }

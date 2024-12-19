@@ -1,13 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, effect, input, model } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { FormGroupAccessorDirective } from '@/directives/form-group-accessor.directive';
+import { ChangeDetectionStrategy, Component, computed, effect, input } from '@angular/core';
 import { FormControl, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { BaseInputComponent } from '../base-input.component';
 import { LabelComponent } from '../label/label.component';
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
 
 @Component({
   selector: 'app-slider',
-  standalone: true,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -17,7 +15,7 @@ import { ValidationErrorsComponent } from '../validation-errors/validation-error
   ],
   imports: [LabelComponent, ValidationErrorsComponent, ReactiveFormsModule],
   template: `
-    @if (rangeForm) {
+    @if (formGroup) {
       <div>
         @if (label()) {
           <app-label [text]="label()" [for]="id()" />
@@ -33,16 +31,15 @@ import { ValidationErrorsComponent } from '../validation-errors/validation-error
           <div class="relative h-2 bg-secondary-600 rounded-lg">
             <input
               type="range"
-              [formControl]="rangeForm.controls.min"
+              [formControl]="minControl"
               [min]="min()"
               [max]="max()"
               [step]="step()"
               [class]="rangeInputClass"
             />
-
             <input
               type="range"
-              [formControl]="rangeForm.controls.max"
+              [formControl]="maxControl"
               [min]="min()"
               [max]="max()"
               [step]="step()"
@@ -52,57 +49,63 @@ import { ValidationErrorsComponent } from '../validation-errors/validation-error
         </div>
 
         <div class="flex justify-between mt-2 text-sm text-secondary-950">
-          <span>{{ minValue() || min() }}</span>
-          <span>{{ maxValue() || max() }}</span>
+          <span>Min: {{ minValue() }}</span>
+          <span>Max: {{ maxValue() }}</span>
         </div>
 
-        @if (rangeForm.touched && rangeForm.dirty) {
-          <app-validation-errors [customErrorMessages]="customErrorMessages()" [errors]="rangeForm.errors" />
+        @if (formGroup.touched && formGroup.dirty) {
+          <app-validation-errors [customErrorMessages]="customErrorMessages()" [errors]="formGroup.errors" />
         }
       </div>
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SliderComponent extends BaseInputComponent<{ min: number; max: number }> {
+export class SliderComponent extends FormGroupAccessorDirective<{ min: number; max: number }> {
+  
   min = input.required<number>();
   max = input.required<number>();
   step = input<number>(1);
-  value = model<{ min: number; max: number }>();
+  label = input<string>('');
+  placeholder = input<string>('');
+  id = input<string>('');
+  customErrorMessages = input<Record<string, string>>({});
 
-  rangeForm = new FormGroup({
-    min: new FormControl(),
-    max: new FormControl()
-  });
-
-  minValue = toSignal(this.rangeForm.controls.min.valueChanges);
-  maxValue = toSignal(this.rangeForm.controls.max.valueChanges);
+  minValue = computed(() => this.formGroup?.get('min')?.value ?? this.min());
+  maxValue = computed(() => this.formGroup?.get('max')?.value ?? this.max());
 
   constructor() {
     super();
-
-    effect(() => {
-      this.rangeForm.controls.min.setValue(this.min(), { emitEvent: false });
-      this.rangeForm.controls.max.setValue(this.max(), { emitEvent: false });
-    });
     
+    this.formGroup = new FormGroup({
+      min: new FormControl(),
+      max: new FormControl()
+    });
+
     effect(() => {
       const minVal = this.minValue();
       const maxVal = this.maxValue();
-
-      if (minVal !== null && maxVal !== null) {
+      if (minVal !== null && maxVal !== null && this.formGroup) {
         if (minVal > maxVal) {
-          this.rangeForm.controls.min.setValue(maxVal, { emitEvent: false });
+          this.formGroup.get('min')?.setValue(maxVal, { emitEvent: false });
         }
         if (maxVal < minVal) {
-          this.rangeForm.controls.max.setValue(minVal, { emitEvent: false });
+          // console.log('1234');
+          this.formGroup.get('max')?.setValue(minVal, { emitEvent: false });
         }
-
-        this.value.set({ min: minVal, max: maxVal });
       }
     });
   }
 
+  get minControl() {
+    return this.formGroup?.get('min') as FormControl;
+  }
+
+  get maxControl() {
+    return this.formGroup?.get('max') as FormControl;
+  }
+  
+ 
   selectedRangeLeft = computed(() => {
     const currentMin = this.minValue() ?? this.min();
     const range = this.max() - this.min();
@@ -128,12 +131,6 @@ export class SliderComponent extends BaseInputComponent<{ min: number; max: numb
     // Width is the difference between max and min positions
     return `${maxPercentage - minPercentage}%`;
   });
-
-  override writeValue(value: { min: number; max: number }): void {
-    if (value) {
-      this.rangeForm.setValue({ min: value.min, max: value.max }, { emitEvent: false });
-    }
-  }
 
   protected readonly rangeInputClass = `absolute w-full h-2 appearance-none bg-transparent
     disabled:opacity-50 disabled:cursor-not-allowed
