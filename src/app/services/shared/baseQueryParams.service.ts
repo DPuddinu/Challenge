@@ -1,16 +1,23 @@
-import { signal } from '@angular/core';
+import { Location } from '@angular/common';
+import { inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 
-type TQueryParamValue = string | string[] | number | number[] | boolean | boolean[];
-type TQueryParams = Record<string, TQueryParamValue>;
+export type TQueryParamValue = string | string[] | number | number[] | boolean | boolean[];
+export type TQueryParams = Record<string, TQueryParamValue>;
 
 export abstract class BaseQueryParamsService<K> {
-  protected queryParams = signal<TQueryParams | null>(null);
+  private readonly queryParams = signal<TQueryParams | null>(null);
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
 
-  protected constructor(protected readonly storageKey: string) {
-    this.queryParams.set(this.getStoredQueryParams());
+  constructor(protected readonly storageKey: string) {
+    const storedParams = this.getStoredQueryParams();
+    if (storedParams) {
+      this.queryParams.set(storedParams);
+    }
   }
 
-  protected getQueryParamsString(queryParams: Record<string, TQueryParamValue>) {
+  getQueryParamsString(queryParams: Record<string, TQueryParamValue>) {
     const queryParamsString = Object.entries(queryParams)
       .map(([key, value]) => {
         const paramValue = Array.isArray(value) ? value.join(',') : value;
@@ -24,20 +31,39 @@ export abstract class BaseQueryParamsService<K> {
     return this.queryParams();
   }
 
-  protected setQueryParam(key: keyof TQueryParams, value: TQueryParamValue) {
-    const currentParams = this.getQueryParams();
-    if (currentParams) {
-      currentParams[key] = value;
-      this.setQueryParams(currentParams);
-    }
+  setQueryParam(key: keyof TQueryParams, value: TQueryParamValue) {
+    if (!value) return;
+
+    const currentParams = this.queryParams();
+    if (!currentParams) return;
+    const newParams = {
+      ...currentParams,
+      [key]: value
+    };
+    this.queryParams.set(newParams);
+    this.setStoredQueryParams(newParams);
+    this.updateUrl(newParams);
   }
 
-  protected setQueryParams(params: TQueryParams) {
-    this.queryParams.set(params);
-    this.setStoredQueryParams(params);
+  setQueryParams(params: TQueryParams) {
+    const newParams = {
+      ...this.queryParams(),
+      ...params
+    };
+    this.queryParams.set(newParams);
+    this.setStoredQueryParams(newParams);
+    this.updateUrl(newParams);
   }
 
-  protected getStoredQueryParams(): TQueryParams | null {
+  private updateUrl(params: TQueryParams): void {
+    const urlTree = this.router.createUrlTree([], {
+      queryParams: params,
+      queryParamsHandling: 'merge'
+    });
+    this.location.go(urlTree.toString());
+  }
+
+  getStoredQueryParams(): TQueryParams | null {
     const stored = sessionStorage.getItem(this.storageKey);
     return stored ? JSON.parse(stored) : null;
   }

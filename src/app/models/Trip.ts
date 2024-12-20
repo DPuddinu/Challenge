@@ -13,24 +13,24 @@ export interface Trip {
   imageUrl: string;
   creationDate: Date;
 }
+export const flightSortByFields = ['title', 'price', 'rating', 'creationDate'] as const;
 export type FlightFilterFields = {
-  title: string;
-  minPrice: number;
-  maxPrice: number;
-  minRating: number;
-  maxRating: number;
-  tags: string[];
+  titleFilter: string;
+  sortBy: (typeof flightSortByFields)[number];
+  sortOrder: 'ASC' | 'DESC';
+  // minPrice: number;
+  // maxPrice: number;
+  // minRating: number;
+  // tags: string[];
   page: number;
   limit: number;
 };
-export const flightSortByFields: Array<keyof Trip> = ['title', 'price', 'rating', 'creationDate'];
 export const flightFilterFields: Array<keyof FlightFilterFields> = [
-  'title',
-  'minPrice',
-  'maxPrice',
-  'minRating',
-  'maxRating',
-  'tags',
+  'titleFilter',
+  // 'minPrice',
+  // 'maxPrice',
+  // 'minRating',
+  // 'tags',
   'page',
   'limit'
 ];

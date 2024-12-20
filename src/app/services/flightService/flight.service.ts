@@ -1,23 +1,23 @@
-import { Injectable, resource } from '@angular/core';
-import { BaseQueryParamsService } from '../shared/baseQueryParams.service';
 import { FlightFilterFields } from '@/models/Trip';
+import { Injectable, resource } from '@angular/core';
 import { environment } from 'environments/environment.dev';
+import { BaseQueryParamsService } from '../shared/baseQueryParams.service';
 import type { FlightResponse } from './flight.types';
 
 const DEFAULT_PAGE = 1;
-const DEFAULT_LIMIT = 10;
+const DEFAULT_LIMIT = 6;
 
 @Injectable({
   providedIn: 'root'
 })
-export class FlightService extends BaseQueryParamsService<Promise<FlightResponse>> {
-  flightsResource = resource({
+export class TripsService extends BaseQueryParamsService<Promise<FlightResponse>> {
+  tripsResource = resource({
     request: () => this.getQueryParams(),
     loader: ({ request, abortSignal }) => this.fetchData(request, abortSignal)
   });
 
   constructor() {
-    super('flight-filters');
+    super('trips-filters');
     this.setQueryParams({
       page: DEFAULT_PAGE,
       limit: DEFAULT_LIMIT

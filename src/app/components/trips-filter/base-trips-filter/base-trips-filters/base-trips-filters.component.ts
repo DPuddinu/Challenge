@@ -1,26 +1,32 @@
-import { ComboBoxComponent } from '@/components/base/combo-box/combo-box.component';
 import { InputComponent } from '@/components/base/input/input.component';
-import { SliderComponent } from '@/components/base/slider/slider.component';
-import { ChangeDetectionStrategy, Component, effect } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { TripsService } from '@/services/flightService/flight.service';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs';
+import { debounceTime, filter, map } from 'rxjs';
+import { SelectComponent } from '@/components/base/select/select.component';
+import { FlightFilterFields, flightSortByFields } from '@/models/Trip';
+import { filterObject } from '@/utils/filterObject';
+
+// type TFormValues = {
+//   ratingRange: {
+//     min: number;
+//     max: number;
+//   };
+//   tags: string[];
+//   minPrice: number;
+//   maxPrice: number;
+// };
 
 @Component({
   selector: 'app-base-trips-filters',
-  imports: [ReactiveFormsModule, InputComponent, ComboBoxComponent, SliderComponent],
-  template: ` <form [formGroup]="searchForm">
-      <app-input
-        type="text"
-        placeholder="Enter title"
-        label="Title"
-        inputId="title"
-        formControlName="title"
-      ></app-input>
-    </form>
-    <form [formGroup]="formGroup" class="py-4 flex flex-col gap-4" (ngSubmit)="onSubmit()">
-      <app-input
+  imports: [ReactiveFormsModule, InputComponent, SelectComponent],
+  template: `
+    <app-input type="text" placeholder="Enter title" label="Title" id="title" [formControl]="titleFilter"></app-input>
+    <form [formGroup]="formGroup" class="py-4 flex flex-col gap-4" >
+      <app-select [options]="sortByOptions" label="Sort By" formControlName="sortBy"></app-select>
+      <app-select [options]="sortOrderOptions" label="Sort Order" formControlName="sortOrder"></app-select>
+      <!-- <app-input
         type="number"
         placeholder="Enter min price"
         label="Min Price"
@@ -34,7 +40,14 @@ import { distinctUntilChanged } from 'rxjs';
         id="maxPrice"
         formControlName="maxPrice"
       ></app-input>
-      <app-slider label="Rating" formControlName="ratingRange" [min]="0" [max]="5" [step]="1"></app-slider>
+      <app-input
+        type="number"
+        placeholder="Enter min rating"
+        label="Min Rating"
+        id="minRating"
+        formControlName="minRating"
+      ></app-input>
+      <app-slider label="Rating" formControlName="ratingRange" [min]="1" [max]="5" [step]="1"></app-slider>
 
       <app-combo-box
         label="Tags"
@@ -46,37 +59,51 @@ import { distinctUntilChanged } from 'rxjs';
           maxlength: 'Please add at most 4 tags'
         }"
       ></app-combo-box>
-      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md" (click)="onSubmit()">Submit</button>
-    </form>`,
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md" (click)="onSubmit()">Submit</button> -->
+    </form>
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BaseTripsFiltersComponent {
-  searchForm = new FormGroup({
-    title: new FormControl()
-  });
+export class BaseTripsFiltersComponent implements OnInit {
+  titleFilter = new FormControl();
   formGroup = new FormGroup({
-    minPrice: new FormControl(),
-    maxPrice: new FormControl(),
-    ratingRange: new FormControl({
-      min: 1,
-      max: 3
-    }),
-    tags: new FormControl([]),
-    page: new FormControl(1),
-    limit: new FormControl(10)
+    sortBy: new FormControl('creationDate'),
+    sortOrder: new FormControl('ASC')
   });
 
-  titleChanges = toSignal(this.searchForm.valueChanges.pipe(debounceTime(300), distinctUntilChanged()));
-  otherChanges = toSignal(this.formGroup.valueChanges);
+  sortByOptions = flightSortByFields.map(field => ({ value: field, label: field }));
+  sortOrderOptions = ['ASC', 'DESC'].map(order => ({ value: order, label: order }));
 
-  constructor() {
-    effect(() => {
-      console.log(this.titleChanges());
-      console.log(this.otherChanges());
-    });
+  constructor(private tripsService: TripsService) {
+    this.titleFilter.valueChanges
+      .pipe(
+        filter(title => !!title),
+        debounceTime(300),
+        takeUntilDestroyed()
+      )
+      .subscribe(title => {
+        this.tripsService.setQueryParam('titleFilter', title);
+      });
+    this.formGroup.valueChanges
+      .pipe(
+        map(values => {
+          const validValues = filterObject(values);
+          return Object.keys(validValues).length > 0 ? validValues : undefined;
+        }),
+        filter(values => !!values),
+        takeUntilDestroyed()
+      )
+      .subscribe((values: Partial<FlightFilterFields>) => {
+        this.tripsService.setQueryParams(values);
+      });
   }
-  onSubmit() {
-    // console.log(this.formSignal());
-    // TODO: Implement submit logic
+  ngOnInit(): void {
+    const storedParams = this.tripsService.getStoredQueryParams();
+    console.log(storedParams);
+    if (storedParams) {
+      this.titleFilter.setValue(storedParams['titleFilter'], { emitEvent: false });
+      this.formGroup.patchValue(storedParams, { emitEvent: false });
+    }
   }
+
 }
