@@ -1,5 +1,5 @@
 import { InputComponent } from '@/components/base/input/input.component';
-import { TripsService } from '@/services/flightService/flight.service';
+import { TripsService } from '@/services/tripsService/tripsService.service';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -23,7 +23,7 @@ import { filterObject } from '@/utils/filterObject';
   imports: [ReactiveFormsModule, InputComponent, SelectComponent],
   template: `
     <app-input type="text" placeholder="Enter title" label="Title" id="title" [formControl]="titleFilter"></app-input>
-    <form [formGroup]="formGroup" class="py-4 flex flex-col gap-4" >
+    <form [formGroup]="formGroup" class="py-4 flex flex-col gap-4">
       <app-select [options]="sortByOptions" label="Sort By" formControlName="sortBy"></app-select>
       <app-select [options]="sortOrderOptions" label="Sort Order" formControlName="sortOrder"></app-select>
       <!-- <app-input
@@ -105,5 +105,4 @@ export class BaseTripsFiltersComponent implements OnInit {
       this.formGroup.patchValue(storedParams, { emitEvent: false });
     }
   }
-
 }

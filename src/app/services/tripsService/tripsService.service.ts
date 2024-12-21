@@ -2,9 +2,8 @@ import { FlightFilterFields } from '@/models/Trip';
 import { Injectable, resource } from '@angular/core';
 import { environment } from 'environments/environment.dev';
 import { BaseQueryParamsService } from '../shared/baseQueryParams.service';
-import type { FlightResponse } from './flight.types';
+import type { FlightResponse } from './trips.types';
 
-const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 6;
 
 @Injectable({
@@ -19,7 +18,6 @@ export class TripsService extends BaseQueryParamsService<Promise<FlightResponse>
   constructor() {
     super('trips-filters');
     this.setQueryParams({
-      page: DEFAULT_PAGE,
       limit: DEFAULT_LIMIT
     });
   }

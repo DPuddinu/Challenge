@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { NgClass } from '@angular/common';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline';
@@ -12,10 +12,11 @@ type ButtonSize = 'sm' | 'md' | 'lg';
       [type]="type()"
       [disabled]="disabled()"
       [attr.aria-disabled]="disabled()"
+      (click)="onClick.emit()"
       [ngClass]="buttonClasses()"
       class="inline-flex items-center justify-center rounded-md font-medium transition-colors 
              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500
-             disabled:pointer-events-none disabled:opacity-50"
+             disabled:pointer-events-none disabled:opacity-50 "
     >
       <ng-content></ng-content>
     </button>
@@ -23,6 +24,7 @@ type ButtonSize = 'sm' | 'md' | 'lg';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ButtonComponent {
+  onClick = output<void>();
   variant = input<ButtonVariant>('primary');
   size = input<ButtonSize>('md');
   type = input<'button' | 'submit' | 'reset'>('button');

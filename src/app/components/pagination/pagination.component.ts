@@ -6,17 +6,8 @@ import { PaginationButtonComponent } from './pagination-button.component';
   selector: 'app-pagination',
   imports: [CommonModule, PaginationButtonComponent],
   template: `
-    <ul class="flex gap-1 items-center">
-      <li>
-        <app-pagination-button
-          label="First"
-          [disabled]="previousDisabled"
-          testIdAttr="first-button"
-          i18nAttr="First button|The first button in the pagination"
-          (onClick)="firstPage()"
-        />
-      </li>
-      <li>
+    <ul class="flex gap-1 items-center ">
+      <li class="hidden sm:block">
         <app-pagination-button
           label="Previous"
           [disabled]="previousDisabled"
@@ -36,7 +27,7 @@ import { PaginationButtonComponent } from './pagination-button.component';
           />
         </li>
       }
-      <li>
+      <li class="hidden sm:block">
         <app-pagination-button
           label="Next"
           [disabled]="nextDisabled"
@@ -45,21 +36,13 @@ import { PaginationButtonComponent } from './pagination-button.component';
           (onClick)="nextPage()"
         />
       </li>
-      <li>
-        <app-pagination-button
-          label="Last"
-          [disabled]="nextDisabled"
-          i18nAttr="Last button|The last button in the pagination"
-          testIdAttr="last-button"
-          (onClick)="lastPage()"
-        />
-      </li>
+      
     </ul>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaginationComponent {
-  maxPages = input.required<number>();
+  maxPages = input<number>(3);
   currentPage = input.required<number>();
   totalPages = input.required<number>();
   pageChange = output<number>();

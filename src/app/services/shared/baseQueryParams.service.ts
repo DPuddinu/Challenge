@@ -33,26 +33,29 @@ export abstract class BaseQueryParamsService<K> {
 
   setQueryParam(key: keyof TQueryParams, value: TQueryParamValue) {
     if (!value) return;
-
-    const currentParams = this.queryParams();
-    if (!currentParams) return;
-    const newParams = {
-      ...currentParams,
-      [key]: value
-    };
-    this.queryParams.set(newParams);
-    this.setStoredQueryParams(newParams);
-    this.updateUrl(newParams);
+    this.queryParams.update(current => {
+      const newParams = {
+        ...current,
+        [key]: value
+      };
+      this.setStoredQueryParams(newParams);
+      this.updateUrl(newParams);
+      return newParams;
+    })
   }
 
   setQueryParams(params: TQueryParams) {
-    const newParams = {
-      ...this.queryParams(),
-      ...params
-    };
-    this.queryParams.set(newParams);
-    this.setStoredQueryParams(newParams);
-    this.updateUrl(newParams);
+    this.queryParams.update(current => {
+      if(!current) return params;
+      const newParams = {
+        ...current,
+        ...params
+      }
+      this.setStoredQueryParams(newParams);
+      this.updateUrl(newParams);
+      return newParams
+    })
+   
   }
 
   private updateUrl(params: TQueryParams): void {
