@@ -1,15 +1,14 @@
-import { Directive, inject, Injector, OnInit, DestroyRef, signal } from '@angular/core';
+import { DestroyRef, Directive, inject, Injector, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ControlValueAccessor,
   FormControl,
-  Validators,
-  NgControl,
+  FormControlDirective,
   FormControlName,
   FormGroupDirective,
-  FormControlDirective
+  NgControl
 } from '@angular/forms';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { startWith, distinctUntilChanged, tap } from 'rxjs';
+import { distinctUntilChanged, startWith } from 'rxjs';
 
 @Directive({
   selector: '[appControlValueAccessor]',
@@ -20,7 +19,6 @@ export class ControlValueAccessorDirective<T> implements ControlValueAccessor, O
   private destroyRef = inject(DestroyRef);
 
   control: FormControl | undefined;
-  isRequired = signal(false);
   isDisabled = signal(false);
   
   private _onTouched!: () => T;
@@ -28,7 +26,6 @@ export class ControlValueAccessorDirective<T> implements ControlValueAccessor, O
 
   ngOnInit() {
     this.setFormControl();
-    this.isRequired.set(this.control?.hasValidator(Validators.required) ?? false);
   }
 
   setFormControl() {
@@ -49,23 +46,28 @@ export class ControlValueAccessorDirective<T> implements ControlValueAccessor, O
   }
 
   writeValue(value: T): void {
-    if (this.control) {
-      this.control.setValue(value); 
-    } else {
+    if (!this.control) {
       this.control = new FormControl(value);
+      return;
+    }
+    if (this.control.value !== value) {
+      if (value === null || value === undefined) {
+        this.control.reset(null, { emitEvent: false });
+      } else {
+        this.control.setValue(value, { emitEvent: false });
+      }
     }
   }
 
   registerOnChange(fn: (val: T | null) => T): void {
     this.onChange = fn;
-    this.control?.valueChanges
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        startWith(this.control.value),
-        distinctUntilChanged(),
-        tap(val => fn(val))
-      )
-      .subscribe(() => this.control?.markAsUntouched());
+    if (this.control) {
+      this.control.valueChanges
+        .pipe(takeUntilDestroyed(this.destroyRef), startWith(this.control.value), distinctUntilChanged())
+        .subscribe(val => {
+          fn(val);
+        });
+    }
   }
 
   registerOnTouched(fn: () => T): void {
@@ -73,6 +75,12 @@ export class ControlValueAccessorDirective<T> implements ControlValueAccessor, O
   }
 
   setDisabledState?(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    if (this.control) {
+      if (isDisabled) {
+        this.control.disable();
+      } else {
+        this.control.enable();
+      }
+    }
   }
 }

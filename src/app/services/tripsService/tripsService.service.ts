@@ -21,7 +21,7 @@ export class TripsService extends BaseQueryParamsService<Promise<FlightResponse>
       limit: DEFAULT_LIMIT
     });
   }
-
+  
   protected override async fetchData(
     queryParams: Partial<FlightFilterFields> | null,
     abortSignal: AbortSignal

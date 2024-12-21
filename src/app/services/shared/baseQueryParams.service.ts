@@ -55,7 +55,18 @@ export abstract class BaseQueryParamsService<K> {
       this.updateUrl(newParams);
       return newParams
     })
-   
+  }
+  clearQueryParams(){
+    this.queryParams.set(null);
+    this.deleteStoredQueryParams();
+    this.router.navigate(
+      [], 
+      {
+        relativeTo: this.router.routerState.root,
+        queryParams: {},
+        replaceUrl: true
+      }
+    );
   }
 
   private updateUrl(params: TQueryParams): void {
@@ -70,7 +81,9 @@ export abstract class BaseQueryParamsService<K> {
     const stored = sessionStorage.getItem(this.storageKey);
     return stored ? JSON.parse(stored) : null;
   }
-
+  protected deleteStoredQueryParams(){
+    sessionStorage.removeItem(this.storageKey);
+  }
   protected setStoredQueryParams(params: TQueryParams): void {
     sessionStorage.setItem(this.storageKey, JSON.stringify(params));
   }

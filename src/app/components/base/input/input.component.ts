@@ -23,7 +23,6 @@ type InputType = 'text' | 'number' | 'email' | 'password';
         <app-label [text]="label()" [for]="id()"></app-label>
       }
       <input
-        [required]="isRequired()"
         [type]="type()"
         [id]="id()"
         [formControl]="control"

@@ -60,6 +60,9 @@ import { filterObject } from '@/utils/filterObject';
         }"
       ></app-combo-box>
       <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md" (click)="onSubmit()">Submit</button> -->
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md" (click)="clearFilters()">
+        Clear Filters
+      </button>
     </form>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -99,10 +102,18 @@ export class BaseTripsFiltersComponent implements OnInit {
   }
   ngOnInit(): void {
     const storedParams = this.tripsService.getStoredQueryParams();
-    console.log(storedParams);
     if (storedParams) {
       this.titleFilter.setValue(storedParams['titleFilter'], { emitEvent: false });
       this.formGroup.patchValue(storedParams, { emitEvent: false });
     }
+  }
+
+  clearFilters() {
+    this.titleFilter.reset();
+    this.formGroup.reset({
+      sortBy: 'creationDate',
+      sortOrder: 'ASC'
+    });
+    this.tripsService.clearQueryParams();
   }
 }
