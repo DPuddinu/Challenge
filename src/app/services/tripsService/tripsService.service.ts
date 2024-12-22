@@ -17,11 +17,21 @@ export class TripsService extends BaseQueryParamsService<Promise<FlightResponse>
 
   constructor() {
     super('trips-filters');
+    this.init();
+  }
+
+  init() {
     this.setQueryParams({
+      page: 1,
       limit: DEFAULT_LIMIT
     });
   }
-  
+
+  override reset(): void {
+    super.reset();
+    this.init();
+  }
+
   protected override async fetchData(
     queryParams: Partial<FlightFilterFields> | null,
     abortSignal: AbortSignal
@@ -30,7 +40,7 @@ export class TripsService extends BaseQueryParamsService<Promise<FlightResponse>
     const url = queryParams ? `${baseUrl}?${this.getQueryParamsString(queryParams)}` : baseUrl;
     const res = await fetch(url, { signal: abortSignal });
     if (!res.ok) {
-      throw new Error('Failed to fetch flights');
+      throw new Error('Failed to fetch trips');
     }
 
     return res.json() as Promise<FlightResponse>;

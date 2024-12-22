@@ -1,12 +1,12 @@
 import { InputComponent } from '@/components/base/input/input.component';
+import { SelectComponent } from '@/components/base/select/select.component';
+import { FlightFilterFields, flightSortByFields } from '@/models/Trip';
 import { TripsService } from '@/services/tripsService/tripsService.service';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { filterObject } from '@/utils/filterObject';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, filter, map } from 'rxjs';
-import { SelectComponent } from '@/components/base/select/select.component';
-import { FlightFilterFields, flightSortByFields } from '@/models/Trip';
-import { filterObject } from '@/utils/filterObject';
 
 // type TFormValues = {
 //   ratingRange: {
@@ -67,7 +67,7 @@ import { filterObject } from '@/utils/filterObject';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BaseTripsFiltersComponent implements OnInit {
+export class BaseTripsFiltersComponent {
   titleFilter = new FormControl();
   formGroup = new FormGroup({
     sortBy: new FormControl('creationDate'),
@@ -99,13 +99,12 @@ export class BaseTripsFiltersComponent implements OnInit {
       .subscribe((values: Partial<FlightFilterFields>) => {
         this.tripsService.setQueryParams(values);
       });
-  }
-  ngOnInit(): void {
-    const storedParams = this.tripsService.getStoredQueryParams();
-    if (storedParams) {
-      this.titleFilter.setValue(storedParams['titleFilter'], { emitEvent: false });
-      this.formGroup.patchValue(storedParams, { emitEvent: false });
-    }
+
+      const storedParams = this.tripsService.getStoredQueryParams();
+      if (storedParams) {
+        this.titleFilter.setValue(storedParams['titleFilter'], { emitEvent: false });
+        this.formGroup.patchValue(storedParams, { emitEvent: false });
+      }
   }
 
   clearFilters() {
@@ -114,6 +113,6 @@ export class BaseTripsFiltersComponent implements OnInit {
       sortBy: 'creationDate',
       sortOrder: 'ASC'
     });
-    this.tripsService.clearQueryParams();
+    this.tripsService.reset();
   }
 }

@@ -41,32 +41,30 @@ export abstract class BaseQueryParamsService<K> {
       this.setStoredQueryParams(newParams);
       this.updateUrl(newParams);
       return newParams;
-    })
+    });
   }
 
   setQueryParams(params: TQueryParams) {
     this.queryParams.update(current => {
-      if(!current) return params;
+      if (!current) return params;
       const newParams = {
         ...current,
         ...params
-      }
+      };
       this.setStoredQueryParams(newParams);
       this.updateUrl(newParams);
-      return newParams
-    })
+      return newParams;
+    });
   }
-  clearQueryParams(){
+
+  reset() {
     this.queryParams.set(null);
     this.deleteStoredQueryParams();
-    this.router.navigate(
-      [], 
-      {
-        relativeTo: this.router.routerState.root,
-        queryParams: {},
-        replaceUrl: true
-      }
-    );
+    this.router.navigate([], {
+      relativeTo: this.router.routerState.root,
+      queryParams: {},
+      replaceUrl: true
+    });
   }
 
   private updateUrl(params: TQueryParams): void {
@@ -81,7 +79,7 @@ export abstract class BaseQueryParamsService<K> {
     const stored = sessionStorage.getItem(this.storageKey);
     return stored ? JSON.parse(stored) : null;
   }
-  protected deleteStoredQueryParams(){
+  protected deleteStoredQueryParams() {
     sessionStorage.removeItem(this.storageKey);
   }
   protected setStoredQueryParams(params: TQueryParams): void {

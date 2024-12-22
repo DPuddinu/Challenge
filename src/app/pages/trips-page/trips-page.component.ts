@@ -29,7 +29,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     PaginationComponent
   ],
   template: `
-    <div class="grid lg:grid-cols-[20%_1fr] overflow-hidden">
+    <div class="grid lg:grid-cols-[20%_1fr] h-full overflow-hidden">
       <section class="p-4 pb-0 grid lg:bg-secondary-700">
         @if (viewportService.isLarge()) {
           @defer {
@@ -47,7 +47,7 @@ import { ReactiveFormsModule } from '@angular/forms';
           }
         }
       </section>
-      <section class="grid grid-rows-[1fr_auto] overflow-auto">
+      <section class="">
         @if (tripsService.tripsResource.isLoading()) {
           <div class="text-white">loading...</div>
         }
