@@ -1,6 +1,6 @@
 import { FlightFilterFields } from '@/models/Trip';
 import { Injectable, resource } from '@angular/core';
-import { environment } from 'environments/environment.dev';
+import { fetchApi } from '../api/api.config';
 import { BaseQueryParamsService } from '../shared/baseQueryParams.service';
 import type { FlightResponse } from './trips.types';
 
@@ -36,13 +36,7 @@ export class TripsService extends BaseQueryParamsService<Promise<FlightResponse>
     queryParams: Partial<FlightFilterFields> | null,
     abortSignal: AbortSignal
   ): Promise<FlightResponse> {
-    const baseUrl = `${environment.apiUrl}/trips`;
-    const url = queryParams ? `${baseUrl}?${this.getQueryParamsString(queryParams)}` : baseUrl;
-    const res = await fetch(url, { signal: abortSignal });
-    if (!res.ok) {
-      throw new Error('Failed to fetch trips');
-    }
-
-    return res.json() as Promise<FlightResponse>;
+    const res = await fetchApi<FlightResponse>('/trips/', { params: queryParams ?? undefined, signal: abortSignal });
+    return res;
   }
 }

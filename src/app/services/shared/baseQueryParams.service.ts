@@ -1,14 +1,12 @@
-import { Location } from '@angular/common';
-import { inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { signal } from '@angular/core';
 
 export type TQueryParamValue = string | string[] | number | number[] | boolean | boolean[];
 export type TQueryParams = Record<string, TQueryParamValue>;
 
 export abstract class BaseQueryParamsService<K> {
   private readonly queryParams = signal<TQueryParams | null>(null);
-  private readonly router = inject(Router);
-  private readonly location = inject(Location);
+  // private readonly router = inject(Router);
+  // private readonly location = inject(Location);
 
   constructor(protected readonly storageKey: string) {
     const storedParams = this.getStoredQueryParams();
@@ -39,7 +37,7 @@ export abstract class BaseQueryParamsService<K> {
         [key]: value
       };
       this.setStoredQueryParams(newParams);
-      this.updateUrl(newParams);
+      // this.updateUrl(newParams);
       return newParams;
     });
   }
@@ -52,7 +50,7 @@ export abstract class BaseQueryParamsService<K> {
         ...params
       };
       this.setStoredQueryParams(newParams);
-      this.updateUrl(newParams);
+      // this.updateUrl(newParams);
       return newParams;
     });
   }
@@ -60,20 +58,20 @@ export abstract class BaseQueryParamsService<K> {
   reset() {
     this.queryParams.set(null);
     this.deleteStoredQueryParams();
-    this.router.navigate([], {
-      relativeTo: this.router.routerState.root,
-      queryParams: {},
-      replaceUrl: true
-    });
+    // this.router.navigate([], {
+    //   relativeTo: this.router.routerState.root,
+    //   queryParams: {},
+    //   replaceUrl: true
+    // });
   }
 
-  private updateUrl(params: TQueryParams): void {
-    const urlTree = this.router.createUrlTree([], {
-      queryParams: params,
-      queryParamsHandling: 'merge'
-    });
-    this.location.go(urlTree.toString());
-  }
+  // private updateUrl(params: TQueryParams): void {
+  //   const urlTree = this.router.createUrlTree([], {
+  //     queryParams: params,
+  //     queryParamsHandling: 'merge'
+  //   });
+  //   this.location.go(urlTree.toString());
+  // }
 
   getStoredQueryParams(): TQueryParams | null {
     const stored = sessionStorage.getItem(this.storageKey);
