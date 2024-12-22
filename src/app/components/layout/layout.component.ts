@@ -1,0 +1,20 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { IconComponent } from "../base/icon/icon.component";
+import { RouterLink } from '@angular/router';
+
+@Component({
+  selector: 'app-layout',
+  imports: [IconComponent, RouterLink],
+  template: `
+  <div class="grid grid-cols-1 grid-rows-[auto_1fr] ">
+    <header class="p-4 sticky top-0 flex items-center gap-4 bg-secondary-700 shadow shadow-secondary-600">
+      <a routerLink="/"><app-icon name='house' [size]='24' fill="none" /></a>
+      <h2 class="~text-lg/2xl">Trips</h2>
+    </header>
+    <main>
+      <ng-content></ng-content>
+    </main>
+  </div>`,
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class LayoutComponent {}

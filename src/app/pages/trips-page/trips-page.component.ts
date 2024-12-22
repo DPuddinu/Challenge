@@ -29,29 +29,25 @@ import { ReactiveFormsModule } from '@angular/forms';
     PaginationComponent
   ],
   template: `
-    <div class="grid lg:grid-cols-[20%_1fr] h-dvh overflow-auto">
+    <div class="grid lg:grid-cols-[20%_1fr] overflow-hidden">
       <section class="p-4 pb-0 grid lg:bg-secondary-700">
         @if (viewportService.isLarge()) {
-          @defer (on viewport()) {
+          @defer {
             <aside class="flex flex-col gap-8 ">
               <h3 class="text-secondary-content font-bold text-lg">Filters</h3>
               <app-base-trips-filters></app-base-trips-filters>
             </aside>
-          } @placeholder (minimum 300) {
-            <div class="h-full w-full rounded animate-pulse bg-secondary-400"></div>
           }
         } @else {
-          @defer (on viewport) {
+          @defer {
             <app-button (onClick)="dialog.open()">Filters</app-button>
             <app-mobile-dialog title="Filters" #dialog="mobileDialog">
               <app-base-trips-filters></app-base-trips-filters>
             </app-mobile-dialog>
-          } @placeholder (minimum 300) {
-            <div class="h-full w-full rounded animate-pulse bg-secondary-400"></div>
           }
         }
       </section>
-      <section class="grid grid-rows-[1fr_auto]">
+      <section class="grid grid-rows-[1fr_auto] overflow-auto">
         @if (tripsService.tripsResource.isLoading()) {
           <div class="text-white">loading...</div>
         }
@@ -118,7 +114,6 @@ import { ReactiveFormsModule } from '@angular/forms';
       </section>
     </div>
   `,
-  host: {},
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TripsPageComponent {
