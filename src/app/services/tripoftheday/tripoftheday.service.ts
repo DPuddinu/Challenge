@@ -16,6 +16,8 @@ export class TripofthedayService {
   }
 
   loadTripOfTheDay() {
-    this.tripOfTheDay$ = toLoadingStateStream<Trip>(this.http.get<Trip>('/trips/random/trip-of-the-day'));
+    if (!this.tripOfTheDay$) {
+      this.tripOfTheDay$ = toLoadingStateStream<Trip>(this.http.get<Trip>('/trips/random/trip-of-the-day'));
+    }
   }
 }

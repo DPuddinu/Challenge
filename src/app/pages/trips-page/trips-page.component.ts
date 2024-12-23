@@ -1,94 +1,84 @@
 import { ButtonComponent } from '@/components/base/button/button.component';
-import { IconComponent } from '@/components/base/icon/icon.component';
 import { MobileDialogComponent } from '@/components/base/mobile-dialog/mobile-dialog.component';
-import { TagComponent } from '@/components/base/tag/tag.component';
-import { CardComponent } from '@/components/card/card.component';
 import { PaginationComponent } from '@/components/pagination/pagination.component';
 import { BaseTripsFiltersComponent } from '@/components/trips-filter/base-trips-filters.component';
-import { Trip } from '@/models/Trip';
 import { TripofthedayService } from '@/services/tripoftheday/tripoftheday.service';
 import { TripsService } from '@/services/tripsService/tripsService.service';
 import { ViewportService } from '@/services/viewport/viewport.service';
-import { calculateScore, TripScore } from '@/utils/tripScore';
-import { CommonModule, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { TripCardComponent } from "../../components/trip-card/trip-card.component";
+import { TripCardComponent } from '@/components/trip-card/trip-card.component';
 
 @Component({
   selector: 'app-trips-page',
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    CardComponent,
-    NgOptimizedImage,
-    TagComponent,
-    IconComponent,
-    NgTemplateOutlet,
-    ButtonComponent,
     MobileDialogComponent,
     PaginationComponent,
     BaseTripsFiltersComponent,
-    TripCardComponent
+    TripCardComponent,
+    ButtonComponent
   ],
   template: `
     <div class="grid lg:grid-cols-[20%_1fr] h-full overflow-hidden">
+      <section class="p-4 pb-0 grid lg:bg-secondary-700 w-full">
+        @if (viewportService.isLarge()) {
+          <aside class="flex flex-col gap-8 w-full">
+            <h3 class="text-secondary-content font-bold text-lg">Filters</h3>
+            @defer (when !!tripsService.tripsResource.value()) {
+              <app-base-trips-filters></app-base-trips-filters>
+            }
+          </aside>
+        } @else {
+          @defer {
+            <app-button [disabled]="tripsService.tripsResource.isLoading()" (onClick)="dialog.open()"
+              >Filters</app-button
+            >
+            <app-mobile-dialog title="Filters" #dialog="mobileDialog">
+              <app-base-trips-filters></app-base-trips-filters>
+            </app-mobile-dialog>
+          }
+        }
+      </section>
       <section>
-        <section class="p-4 pb-0 flex flex-col gap-4">
-          <app-button (onClick)="fetchTripOfTheDay()">Trip of the day</app-button>
-          @if (tripOfTheDay | async; as trip) {
-            @switch (trip.state) {
-              @case ('loading') {
-                <div class="text-white">loading...</div>
-              }
-              @case ('loaded') {
-                <app-trip-card [trip]="trip.data"></app-trip-card>
-              }
-              @case ('error') {
-                <div class="text-white">error loading trip of the day</div>
-              }
-            }
-          }
-        </section>
-        <section class="p-4 pb-0 grid lg:bg-secondary-700">
-          @if (viewportService.isLarge()) {
-            <aside class="flex flex-col gap-8 ">
-              <h3 class="text-secondary-content font-bold text-lg">Filters</h3>
-              @defer (when !!tripsService.tripsResource.value()) {
-                <app-base-trips-filters></app-base-trips-filters>
-              }
-            </aside>
-          } @else {
-            @defer {
-              <app-button [disabled]="tripsService.tripsResource.isLoading()" (onClick)="dialog.open()"
-                >Filters</app-button
-              >
-              <app-mobile-dialog title="Filters" #dialog="mobileDialog">
-                <app-base-trips-filters></app-base-trips-filters>
-              </app-mobile-dialog>
-            }
-          }
-        </section>
         @if (tripsService.tripsResource.isLoading()) {
           <div class="text-white">loading...</div>
         }
         @if (tripsService.tripsResource.error()) {
           <div class="text-white">error...</div>
         }
-        <section #tripsContainer class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 2xl:grid-cols-4 overflow-y-auto">
-          @for (trip of tripsService.tripsResource.value()?.items; track trip.id) {
-            <app-trip-card [trip]="trip"></app-trip-card>
+        <div>
+          <section class="p-4 flex flex-col gap-4">
+            <app-button (onClick)="loadTripOfTheDay()">Trip of the day</app-button>
+            @if (tripOfTheDay | async; as trip) {
+              @switch (trip.state) {
+                @case ('loading') {
+                  <div class="text-white">loading...</div>
+                }
+                @case ('loaded') {
+                  <app-trip-card [trip]="trip.data"></app-trip-card>
+                }
+                @case ('error') {
+                  <div class="text-white">error loading trip of the day</div>
+                }
+              }
+            }
+          </section>
+          <section #tripsContainer class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 2xl:grid-cols-4 overflow-y-auto">
+            @for (trip of tripsService.tripsResource.value()?.items; track trip.id) {
+              <app-trip-card [trip]="trip"></app-trip-card>
+            }
+          </section>
+          @defer (on viewport(tripsContainer)) {
+            <div class="flex justify-center pb-4">
+              <app-pagination
+                [currentPage]="currentPage"
+                [totalPages]="totalPages"
+                (pageChange)="onPageChange($event)"
+              ></app-pagination>
+            </div>
           }
-        </section>
-        @defer (on viewport(tripsContainer)) {
-          <div class="flex justify-center pb-4">
-            <app-pagination
-              [currentPage]="currentPage"
-              [totalPages]="totalPages"
-              (pageChange)="onPageChange($event)"
-            ></app-pagination>
-          </div>
-        }
+        </div>
       </section>
     </div>
   `,
@@ -103,10 +93,8 @@ export class TripsPageComponent {
     this.tripsService.setQueryParam('page', page);
   }
 
-  fetchTripOfTheDay() {
-    if (!this.tripOfTheDayService.getTripOfTheDay()) {
-      this.tripOfTheDayService.loadTripOfTheDay();
-    }
+  loadTripOfTheDay() {
+    this.tripOfTheDayService.loadTripOfTheDay();
   }
 
   get tripOfTheDay() {
