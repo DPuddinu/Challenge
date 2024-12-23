@@ -1,11 +1,14 @@
 import { Trip } from '@/models/Trip';
 import { CommonModule, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IconComponent } from '../base/icon/icon.component';
 import { TagComponent } from '../base/tag/tag.component';
 import { CardComponent } from '../card/card.component';
 import { calculateScore, TripScore } from '@/utils/tripScore';
+import { RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-trip-card',
@@ -16,13 +19,15 @@ import { calculateScore, TripScore } from '@/utils/tripScore';
     NgOptimizedImage,
     TagComponent,
     IconComponent,
-    NgTemplateOutlet
+    NgTemplateOutlet,
+    RouterLink
   ],
   template: ` <app-card>
     <ng-template #cardContent>
-      <div class="grid @sm:grid-cols-[max(30%,_200px)_1fr] @sm:items-center gap-4">
-        <div class="overflow-hidden rounded-lg aspect-square relative">
-          <img
+      <a [routerLink]="['/trips', trip().id]" (mouseenter)="prefetchTripDetail(trip())">
+        <div class="grid @sm:grid-cols-[max(30%,_200px)_1fr] @sm:items-center gap-4">
+          <div class="overflow-hidden rounded-lg aspect-square relative">
+            <img
             [ngSrc]="trip().thumbnailUrl"
             fill
             priority
@@ -53,16 +58,23 @@ import { calculateScore, TripScore } from '@/utils/tripScore';
               <app-tag [label]="tag" class="!bg-primary-500 w-fit"></app-tag>
             }
           </div>
+          </div>
         </div>
-      </div>
+      </a>
     </ng-template>
   </app-card>`,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TripCardComponent {
+  private http = inject(HttpClient);
+  private readonly destroyRef = inject(DestroyRef);
   trip = input.required<Trip>();
 
   getTripScore(trip: Trip): TripScore {
     return calculateScore({ rating: trip.rating, nrOfRatings: trip.nrOfRatings, co2: trip.co2 });
+  }
+
+  prefetchTripDetail(trip: Trip) {
+    this.http.get<Trip>(`/trips/${trip.id}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 }

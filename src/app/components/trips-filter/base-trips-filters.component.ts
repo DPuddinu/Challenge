@@ -1,7 +1,7 @@
 import { InputComponent } from '@/components/base/input/input.component';
 import { SelectComponent } from '@/components/base/select/select.component';
 import { FlightFilterFields, flightSortByFields } from '@/models/Trip';
-import { TripsService } from '@/services/tripsService/tripsService.service';
+import { TripsService } from '@/services/trips-service/trips.service';
 import { filterObject } from '@/utils/filterObject';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -100,11 +100,11 @@ export class BaseTripsFiltersComponent {
         this.tripsService.setQueryParams(values);
       });
 
-      const storedParams = this.tripsService.getStoredQueryParams();
-      if (storedParams) {
-        this.titleFilter.setValue(storedParams['titleFilter'], { emitEvent: false });
-        this.formGroup.patchValue(storedParams, { emitEvent: false });
-      }
+    const storedParams = this.tripsService.getStoredQueryParams();
+    if (storedParams) {
+      this.titleFilter.setValue(storedParams['titleFilter'], { emitEvent: false });
+      this.formGroup.patchValue(storedParams, { emitEvent: false });
+    }
   }
 
   clearFilters() {
