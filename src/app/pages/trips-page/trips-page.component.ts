@@ -6,6 +6,7 @@ import { CardComponent } from '@/components/card/card.component';
 import { PaginationComponent } from '@/components/pagination/pagination.component';
 import { BaseTripsFiltersComponent } from '@/components/trips-filter/base-trips-filter/base-trips-filters/base-trips-filters.component';
 import { Trip } from '@/models/Trip';
+import { TripofthedayService } from '@/services/tripoftheday/tripoftheday.service';
 import { TripsService } from '@/services/tripsService/tripsService.service';
 import { ViewportService } from '@/services/viewport/viewport.service';
 import { calculateScore, TripScore } from '@/utils/tripScore';
@@ -47,7 +48,23 @@ import { ReactiveFormsModule } from '@angular/forms';
           }
         }
       </section>
-      <section class="">
+      <section>
+        <section class="p-4 pb-0">
+          <app-button (onClick)="fetchTripOfTheDay()">Trip of the day</app-button>
+          @if (tripOfTheDay | async; as trip) {
+            @switch (trip.state) {
+              @case ('loading') {
+                <div class="text-white">loading...</div>
+              }
+              @case ('loaded') {
+                <div class="text-white">{{ trip.data.title }}</div>
+              }
+              @case ('error') {
+                <div class="text-white">error loading trip of the day</div>
+              }
+            }
+          }
+        </section>
         @if (tripsService.tripsResource.isLoading()) {
           <div class="text-white">loading...</div>
         }
@@ -56,10 +73,7 @@ import { ReactiveFormsModule } from '@angular/forms';
         }
         @if (tripsService.tripsResource.value()) {
           <div>
-            <section
-              #tripsContainer
-              class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 2xl:grid-cols-4 overflow-y-auto"
-            >
+            <section class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 2xl:grid-cols-4 overflow-y-auto">
               @for (flight of tripsService.tripsResource.value()?.items; track flight.id) {
                 <app-card>
                   <ng-template #cardContent>
@@ -119,9 +133,20 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class TripsPageComponent {
   viewportService = inject(ViewportService);
   tripsService = inject(TripsService);
+  tripOfTheDayService = inject(TripofthedayService);
 
   onPageChange(page: number) {
     this.tripsService.setQueryParam('page', page);
+  }
+
+  fetchTripOfTheDay() {
+    if (!this.tripOfTheDayService.getTripOfTheDay()) {
+      this.tripOfTheDayService.loadTripOfTheDay();
+    }
+  }
+
+  get tripOfTheDay() {
+    return this.tripOfTheDayService.getTripOfTheDay();
   }
 
   get totalPages() {
