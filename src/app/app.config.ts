@@ -15,7 +15,7 @@ export const appConfig: ApplicationConfig = {
       useValue: 'en-US'
     },
     provideServiceWorker('ngsw-worker.js', {
-      enabled: isDevMode(),
+      enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'
     })
   ]

@@ -45,10 +45,10 @@
         "/trips/**"
       ],
       "cacheConfig": {
-        "strategy": "freshness",
+        "strategy": "performance",
         "maxAge": "1h",
-        "maxSize": 100,
-        "timeout": "5s"
+        "maxSize": 1,
+        "timeout": "3s"
       }
     }
   ]
