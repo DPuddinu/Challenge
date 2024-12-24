@@ -7,7 +7,7 @@ import { NgClass } from '@angular/common';
     <button
       [attr.i18n]="i18nAttr()"
       [attr.data-testid]="testIdAttr()"
-      class="px-3 py-2 rounded border bg-secondary-700 text-secondary-500 enabled:hover:bg-secondary-600 disabled:opacity-50 disabled:cursor-not-allowed"
+      class="px-3 py-2 rounded border bg-secondary-800 text-secondary-500 enabled:hover:bg-secondary-600 disabled:opacity-50 disabled:cursor-not-allowed"
       [ngClass]="{
         '!bg-secondary-400 !text-black': isActive()
       }"

@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { TripsPageComponent } from './pages/trips-page/trips-page.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
-import { tripDetailResolver } from './resolvers/trip-detail.resolver';
+import { tripDetailResolver } from '../resolvers/trip-detail.resolver';
 
 export const routes: Routes = [
   {

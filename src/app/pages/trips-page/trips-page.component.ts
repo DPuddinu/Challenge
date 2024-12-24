@@ -21,7 +21,7 @@ import { TripCardComponent } from '@/components/trip-card/trip-card.component';
   ],
   template: `
     <div class="grid lg:grid-cols-[20%_1fr] h-full overflow-hidden">
-      <section class="p-4 pb-0 grid lg:bg-secondary-700 w-full">
+      <section class="p-4 pb-0 grid lg:bg-secondary-800 w-full">
         @if (viewportService.isLarge()) {
           <aside class="flex flex-col gap-8 w-full">
             <h3 class="text-secondary-content font-bold text-lg">Filters</h3>
@@ -69,7 +69,7 @@ import { TripCardComponent } from '@/components/trip-card/trip-card.component';
               <app-trip-card [trip]="trip"></app-trip-card>
             }
           </section>
-          @defer (on viewport(tripsContainer)) {
+          @defer (when !!tripsService.tripsResource.value()) {
             <div class="flex justify-center pb-4">
               <app-pagination
                 [currentPage]="currentPage"
@@ -104,6 +104,7 @@ export class TripsPageComponent {
   get totalPages() {
     return this.tripsService.tripsResource.value()?.total ?? 1;
   }
+
   get currentPage() {
     return this.tripsService.tripsResource.value()?.page ?? 1;
   }

@@ -1,6 +1,6 @@
 import { InputComponent } from '@/components/base/input/input.component';
 import { SelectComponent } from '@/components/base/select/select.component';
-import { FlightFilterFields, flightSortByFields } from '@/models/Trip';
+import { FlightFilterFields, flightSortByFields } from '@/models/trip.types';
 import { TripsService } from '@/services/trips-service/trips.service';
 import { filterObject } from '@/utils/filterObject';
 import { ChangeDetectionStrategy, Component } from '@angular/core';

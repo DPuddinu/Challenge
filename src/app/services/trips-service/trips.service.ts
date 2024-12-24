@@ -1,15 +1,21 @@
-import { FlightFilterFields } from '@/models/Trip';
+import { FlightFilterFields, Trip } from '@/models/trip.types';
 import { Injectable, resource } from '@angular/core';
 import { fetchApi } from '../api/api.config';
 import { BaseQueryParamsService } from '../shared/baseQueryParams.service';
-import type { FlightResponse } from './trips.types';
+
+export type TripsResponse = {
+  items: Trip[];
+  total: number;
+  limit: number;
+  page: number;
+};
 
 const DEFAULT_LIMIT = 6;
 
 @Injectable({
   providedIn: 'root'
 })
-export class TripsService extends BaseQueryParamsService<Promise<FlightResponse>> {
+export class TripsService extends BaseQueryParamsService<Promise<TripsResponse>> {
   tripsResource = resource({
     request: () => this.getQueryParams(),
     loader: ({ request, abortSignal }) => this.fetchData(request, abortSignal)
@@ -35,8 +41,8 @@ export class TripsService extends BaseQueryParamsService<Promise<FlightResponse>
   protected override async fetchData(
     queryParams: Partial<FlightFilterFields> | null,
     abortSignal: AbortSignal
-  ): Promise<FlightResponse> {
-    const res = await fetchApi<FlightResponse>('/trips/', { params: queryParams ?? undefined, signal: abortSignal });
+  ): Promise<TripsResponse> {
+    const res = await fetchApi<TripsResponse>('/trips/', { params: queryParams ?? undefined, signal: abortSignal });
     return res;
   }
 }

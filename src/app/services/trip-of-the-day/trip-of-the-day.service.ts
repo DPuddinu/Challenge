@@ -1,4 +1,4 @@
-import { Trip } from '@/models/Trip';
+import { Trip } from '@/models/trip.types';
 import { LoadingState, toLoadingStateStream } from '@/utils/toLoadingStateStream';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';

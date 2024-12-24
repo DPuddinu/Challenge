@@ -1,7 +1,7 @@
 const { createGlobPatternsForDependencies } = require('@nx/angular/tailwind');
 const { join } = require('path');
-import fluid, { extract, screens, fontSize } from 'fluid-tailwind'
-import containerQueries from "@tailwindcss/container-queries"
+import fluid, { extract, screens, fontSize } from 'fluid-tailwind';
+import containerQueries from '@tailwindcss/container-queries';
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -36,7 +36,7 @@ module.exports = {
           400: 'var(--secondary-400)',
           500: 'var(--secondary-500)',
           600: 'var(--secondary-600)',
-          700: 'var(--secondary-700)',
+          700: 'var(--secondary-800)',
           800: 'var(--secondary-800)',
           900: 'var(--secondary-900)',
           950: 'var(--secondary-950)',
