@@ -6,40 +6,17 @@ import { filterObject } from '@/utils/filterObject';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, filter, map } from 'rxjs';
-
-// type TFormValues = {
-//   ratingRange: {
-//     min: number;
-//     max: number;
-//   };
-//   tags: string[];
-//   minPrice: number;
-//   maxPrice: number;
-// };
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs';
+import { SliderComponent } from "../base/slider/slider.component";
 
 @Component({
   selector: 'app-base-trips-filters',
-  imports: [ReactiveFormsModule, InputComponent, SelectComponent],
+  imports: [ReactiveFormsModule, InputComponent, SelectComponent, SliderComponent],
   template: `
     <app-input type="text" placeholder="Enter title" label="Title" id="title" [formControl]="titleFilter"></app-input>
     <form [formGroup]="formGroup" class="py-4 flex flex-col gap-4">
       <app-select [options]="sortByOptions" label="Sort By" formControlName="sortBy"></app-select>
       <app-select [options]="sortOrderOptions" label="Sort Order" formControlName="sortOrder"></app-select>
-      <!-- <app-input
-        type="number"
-        placeholder="Enter min price"
-        label="Min Price"
-        id="minPrice"
-        formControlName="minPrice"
-      ></app-input>
-      <app-input
-        type="number"
-        placeholder="Enter max price"
-        label="Max Price"
-        id="maxPrice"
-        formControlName="maxPrice"
-      ></app-input>
       <app-input
         type="number"
         placeholder="Enter min rating"
@@ -47,19 +24,14 @@ import { debounceTime, filter, map } from 'rxjs';
         id="minRating"
         formControlName="minRating"
       ></app-input>
-      <app-slider label="Rating" formControlName="ratingRange" [min]="1" [max]="5" [step]="1"></app-slider>
+      <app-slider label="Price Range" formControlName="priceRange" [min]="1" [max]="10000" [step]="10"></app-slider>
 
-      <app-combo-box
+      <!-- <app-combo-box
         label="Tags"
         comboBoxId="myComboBox"
         formControlName="tags"
-        [customErrorMessages]="{
-          required: 'Please add at least one tag',
-          minlength: 'Please add at least 2 tags',
-          maxlength: 'Please add at most 4 tags'
-        }"
-      ></app-combo-box>
-      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md" (click)="onSubmit()">Submit</button> -->
+        
+      ></app-combo-box> -->
       <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md" (click)="clearFilters()">
         Clear Filters
       </button>
@@ -71,7 +43,9 @@ export class BaseTripsFiltersComponent {
   titleFilter = new FormControl();
   formGroup = new FormGroup({
     sortBy: new FormControl('creationDate'),
-    sortOrder: new FormControl('ASC')
+    sortOrder: new FormControl('ASC'),
+    priceRange: new FormControl({ min: 1, max: 10000 }),
+    minRating: new FormControl(1)
   });
 
   sortByOptions = flightSortByFields.map(field => ({ value: field, label: field }));
@@ -90,10 +64,19 @@ export class BaseTripsFiltersComponent {
     this.formGroup.valueChanges
       .pipe(
         map(values => {
-          const validValues = filterObject(values);
+          const filters = {
+            sortBy: values.sortBy,
+            sortOrder: values.sortOrder,
+            minRating: values.minRating,
+            minPrice: values.priceRange?.min,
+            maxPrice: values.priceRange?.max
+          }
+          const validValues = filterObject(filters);
           return Object.keys(validValues).length > 0 ? validValues : undefined;
         }),
         filter(values => !!values),
+        debounceTime(300),
+        distinctUntilChanged(),
         takeUntilDestroyed()
       )
       .subscribe((values: Partial<FlightFilterFields>) => {

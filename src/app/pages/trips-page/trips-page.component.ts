@@ -3,7 +3,7 @@ import { MobileDialogComponent } from '@/components/base/mobile-dialog/mobile-di
 import { PaginationComponent } from '@/components/pagination/pagination.component';
 import { BaseTripsFiltersComponent } from '@/components/trips-filter/base-trips-filters.component';
 import { TripofthedayService } from '@/services/trip-of-the-day/trip-of-the-day.service';
-import { TripsService } from '@/services/trips-service/trips.service';
+import { TRIPS_PER_PAGE, TripsService } from '@/services/trips-service/trips.service';
 import { ViewportService } from '@/services/viewport/viewport.service';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
@@ -41,12 +41,6 @@ import { TripCardComponent } from '@/components/trip-card/trip-card.component';
         }
       </section>
       <section>
-        @if (tripsService.tripsResource.isLoading()) {
-          <div class="text-white">loading...</div>
-        }
-        @if (tripsService.tripsResource.error()) {
-          <div class="text-white">error...</div>
-        }
         <div>
           <section class="p-4 flex flex-col gap-4">
             <app-button (onClick)="loadTripOfTheDay()">Trip of the day</app-button>
@@ -64,12 +58,18 @@ import { TripCardComponent } from '@/components/trip-card/trip-card.component';
               }
             }
           </section>
+          @if (tripsService.tripsResource.isLoading()) {
+            <div class="text-white">loading...</div>
+          }
+          @if (tripsService.tripsResource.error()) {
+            <div class="text-white">error...</div>
+          }
           <section #tripsContainer class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 2xl:grid-cols-4 overflow-y-auto">
             @for (trip of tripsService.tripsResource.value()?.items; track trip.id) {
               <app-trip-card [trip]="trip"></app-trip-card>
             }
           </section>
-          @defer (when !!tripsService.tripsResource.value()) {
+          @if (tripsService.tripsResource.value()?.items) {
             <div class="flex justify-center pb-4">
               <app-pagination
                 [currentPage]="currentPage"
@@ -102,7 +102,9 @@ export class TripsPageComponent {
   }
 
   get totalPages() {
-    return this.tripsService.tripsResource.value()?.total ?? 1;
+    const total = this.tripsService.tripsResource.value()?.total;
+    if (!total) return 1;
+    return Math.ceil(total / TRIPS_PER_PAGE) ?? 1;
   }
 
   get currentPage() {

@@ -7,6 +7,7 @@ import { BaseTripComponent } from '../base-trip/base-trip.component';
 import { IconComponent } from '../base/icon/icon.component';
 import { TagComponent } from '../base/tag/tag.component';
 import { CardComponent } from '../card/card.component';
+import { FallbackImageDirective } from '@/directives/image-error-fallback.directive';
 
 @Component({
   selector: 'app-trip-card',
@@ -18,7 +19,8 @@ import { CardComponent } from '../card/card.component';
     TagComponent,
     IconComponent,
     NgTemplateOutlet,
-    RouterLink
+    RouterLink,
+    FallbackImageDirective
   ],
   template: ` <app-card>
     <ng-template #cardContent>
@@ -27,6 +29,7 @@ import { CardComponent } from '../card/card.component';
           <div class="overflow-hidden rounded-lg aspect-square relative">
             <img
               [ngSrc]="trip().thumbnailUrl"
+              [fallbackSrc]="'assets/placeholders/img-placeholder.svg'"
               fill
               priority
               class="rounded-lg object-contain transition-all duration-300 group-hover:scale-110"

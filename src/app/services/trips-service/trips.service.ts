@@ -10,7 +10,7 @@ export type TripsResponse = {
   page: number;
 };
 
-const DEFAULT_LIMIT = 6;
+export const TRIPS_PER_PAGE = 5;
 
 @Injectable({
   providedIn: 'root'
@@ -26,10 +26,10 @@ export class TripsService extends BaseQueryParamsService<Promise<TripsResponse>>
     this.init();
   }
 
-  init() {
+  private init() {
     this.setQueryParams({
       page: 1,
-      limit: DEFAULT_LIMIT
+      limit: TRIPS_PER_PAGE
     });
   }
 

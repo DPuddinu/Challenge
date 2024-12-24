@@ -43,7 +43,7 @@ import { ValidationErrorsComponent } from '../validation-errors/validation-error
           </div>
         </div>
 
-        <div class="flex justify-between mt-2 text-sm text-secondary-950">
+        <div class="flex justify-between mt-2 text-sm text-secondary-content">
           <span >Min: {{ minValue() }}</span>
           <span>Max: {{ maxValue() }}</span>
         </div>

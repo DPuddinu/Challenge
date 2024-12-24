@@ -18,9 +18,9 @@ export type FlightFilterFields = {
   titleFilter: string;
   sortBy: (typeof flightSortByFields)[number];
   sortOrder: 'ASC' | 'DESC';
-  // minPrice: number;
-  // maxPrice: number;
-  // minRating: number;
+  minPrice: number;
+  maxPrice: number;
+  minRating: number;
   // tags: string[];
   page: number;
   limit: number;
