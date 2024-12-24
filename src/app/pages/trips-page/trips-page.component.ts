@@ -20,7 +20,7 @@ import { TripCardComponent } from '@/components/trip-card/trip-card.component';
     ButtonComponent
   ],
   template: `
-    <div class="grid lg:grid-cols-[20%_1fr] h-full overflow-hidden">
+    <div class="grid grid-rows-[auto_1fr] lg:grid-cols-[20%_1fr] h-full overflow-hidden">
       <section class="p-4 pb-0 grid lg:bg-secondary-800 w-full">
         @if (viewportService.isLarge()) {
           <aside class="flex flex-col gap-8 w-full">

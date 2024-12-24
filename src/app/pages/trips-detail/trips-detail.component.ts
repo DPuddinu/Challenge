@@ -8,10 +8,11 @@ import { ParenthesisPipe } from '@/pipes/parenthesis.pipe';
 import { TagComponent } from '@/components/base/tag/tag.component';
 import { WeightUnitPipe } from '@/pipes/weight-unit.pipe';
 import { BaseTripComponent } from '@/components/base-trip/base-trip.component';
+import { FallbackImageDirective } from '@/directives/image-error-fallback.directive';
 
 @Component({
   selector: 'app-trips-detail',
-  imports: [CommonModule, NgOptimizedImage, IconComponent, ParenthesisPipe, TagComponent, WeightUnitPipe],
+  imports: [CommonModule, NgOptimizedImage, IconComponent, ParenthesisPipe, TagComponent, WeightUnitPipe, FallbackImageDirective],
   template: `
     <section class="container mx-auto py-4 ">
       @if (trip$ | async; as trip) {
@@ -21,6 +22,7 @@ import { BaseTripComponent } from '@/components/base-trip/base-trip.component';
               <header class="relative overflow-hidden">
                 <img
                   [ngSrc]="trip.data.imageUrl"
+                  [fallbackSrc]="'assets/placeholders/img-placeholder.svg'"
                   alt="trip image"
                   fill
                   priority
@@ -73,9 +75,7 @@ import { BaseTripComponent } from '@/components/base-trip/base-trip.component';
                     ></ng-container>
                     <ng-template #tierTemplate let-tier>
                       <div class="flex gap-2  ~text-base/lg text-secondary-content opacity-85">
-                        <span >Trip score: {{
-                          tier.label | titlecase
-                        }}</span>
+                        <span>Trip score: {{ tier.label | titlecase }}</span>
                         <app-icon [class]="tier.color" [name]="'crown'" fill="none" [size]="24" [strokeWidth]="2" />
                       </div>
                     </ng-template>

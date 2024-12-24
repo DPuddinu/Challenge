@@ -23,7 +23,6 @@ export class TripsService extends BaseQueryParamsService<Promise<TripsResponse>>
 
   constructor() {
     super('trips-filters');
-    this.init();
   }
 
   private init() {
