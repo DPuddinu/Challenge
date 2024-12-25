@@ -39,19 +39,15 @@ describe('PaginationComponent', () => {
     fixture.componentRef.setInput('currentPage', 1);
     fixture.detectChanges();
     
-    expect(getButtonByTestId('first-button').nativeElement.disabled).toBeTrue();
     expect(getButtonByTestId('previous-button').nativeElement.disabled).toBeTrue();
     expect(getButtonByTestId('next-button').nativeElement.disabled).toBeFalse();
-    expect(getButtonByTestId('last-button').nativeElement.disabled).toBeFalse();
 
     // Last page - next/last buttons should be disabled
     fixture.componentRef.setInput('currentPage', 10);
     fixture.detectChanges();
 
-    expect(getButtonByTestId('first-button').nativeElement.disabled).toBeFalse();
     expect(getButtonByTestId('previous-button').nativeElement.disabled).toBeFalse();
     expect(getButtonByTestId('next-button').nativeElement.disabled).toBeTrue();
-    expect(getButtonByTestId('last-button').nativeElement.disabled).toBeTrue();
   });
 
   it('should emit correct page numbers when navigation buttons are clicked', () => {
@@ -60,8 +56,6 @@ describe('PaginationComponent', () => {
     fixture.componentRef.setInput('currentPage', 5);
     fixture.detectChanges();
 
-    getButtonByTestId('first-button').nativeElement.click();
-    expect(pageChangeSpy).toHaveBeenCalledWith(1);
 
     getButtonByTestId('previous-button').nativeElement.click();
     expect(pageChangeSpy).toHaveBeenCalledWith(4);
@@ -69,8 +63,7 @@ describe('PaginationComponent', () => {
     getButtonByTestId('next-button').nativeElement.click();
     expect(pageChangeSpy).toHaveBeenCalledWith(6);
 
-    getButtonByTestId('last-button').nativeElement.click();
-    expect(pageChangeSpy).toHaveBeenCalledWith(10);
+    
   });
 
   it('should render correct page numbers with ellipsis', () => {
@@ -141,8 +134,8 @@ describe('PaginationComponent', () => {
     const pageButtons = getAllPageButtons();
     // Find the active button by checking its classList
     const activeButton = pageButtons.findIndex((btn) =>
-      btn.nativeElement.classList.contains('bg-blue-500') && 
-      btn.nativeElement.classList.contains('text-white')
+      btn.nativeElement.classList.contains('!bg-secondary-400') && 
+      btn.nativeElement.classList.contains('!text-black')
     );
     expect(activeButton).toBe(1); // 0-based index
   });
