@@ -77,7 +77,7 @@ export abstract class BaseQueryParamsService<K> {
     const stored = sessionStorage.getItem(this.storageKey);
     return stored ? JSON.parse(stored) : null;
   }
-  protected deleteStoredQueryParams() {
+  deleteStoredQueryParams() {
     sessionStorage.removeItem(this.storageKey);
   }
   protected setStoredQueryParams(params: TQueryParams): void {

@@ -1,6 +1,6 @@
 import { RatingCalculable } from '@/models/rating-calculable';
 import { Trip } from '@/models/trip.types';
-import { TripScore } from '@/utils/tripScore';
+import { TripScore } from '@/models/tripScore';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
