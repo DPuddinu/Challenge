@@ -37,7 +37,7 @@ export class TripsService extends BaseQueryParamsService<Promise<TripsResponse>>
     this.init();
   }
 
-  protected override async fetchData(
+  override async fetchData(
     queryParams: Partial<FlightFilterFields> | null,
     abortSignal: AbortSignal
   ): Promise<TripsResponse> {

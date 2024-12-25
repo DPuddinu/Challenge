@@ -25,7 +25,7 @@ export abstract class BaseQueryParamsService<K> {
     return queryParamsString;
   }
 
-  protected getQueryParams() {
+  getQueryParams() {
     return this.queryParams();
   }
 
