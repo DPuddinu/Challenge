@@ -1,5 +1,4 @@
 import { DestroyRef, Directive, inject, Injector, OnInit, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ControlValueAccessor,
   FormControl,
@@ -8,7 +7,7 @@ import {
   FormGroupDirective,
   NgControl
 } from '@angular/forms';
-import { distinctUntilChanged, startWith } from 'rxjs';
+import { distinctUntilChanged, startWith, Subscription } from 'rxjs';
 
 @Directive({
   selector: '[appControlValueAccessor]',
@@ -23,6 +22,7 @@ export class ControlValueAccessorDirective<T> implements ControlValueAccessor, O
   
   private _onTouched!: () => T;
   protected onChange!: (value: T) => void;
+  private valueChangesSubscription: Subscription | undefined;
 
   ngOnInit() {
     this.setFormControl();
@@ -62,8 +62,9 @@ export class ControlValueAccessorDirective<T> implements ControlValueAccessor, O
   registerOnChange(fn: (val: T | null) => T): void {
     this.onChange = fn;
     if (this.control) {
-      this.control.valueChanges
-        .pipe(takeUntilDestroyed(this.destroyRef), startWith(this.control.value), distinctUntilChanged())
+      this.valueChangesSubscription?.unsubscribe();
+      this.valueChangesSubscription = this.control.valueChanges
+        .pipe(startWith(this.control.value), distinctUntilChanged())
         .subscribe(val => {
           fn(val);
         });

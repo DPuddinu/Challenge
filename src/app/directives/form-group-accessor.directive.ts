@@ -1,7 +1,6 @@
 import { DestroyRef, Directive, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ControlValueAccessor, FormGroup } from '@angular/forms';
-import { distinctUntilChanged, startWith, tap } from 'rxjs';
+import { distinctUntilChanged, startWith, Subscription, tap } from 'rxjs';
 
 @Directive({
   selector: '[appFormGroupAccessor]',
@@ -13,7 +12,7 @@ export class FormGroupAccessorDirective<T extends object> implements ControlValu
 
   private _onTouched!: () => T;
   protected onChange!: (value: T) => void;
-
+  private valueChangesSubscription: Subscription | undefined;
 
   writeValue(value: T): void {
     if (this.formGroup) {
@@ -27,9 +26,9 @@ export class FormGroupAccessorDirective<T extends object> implements ControlValu
   registerOnChange(fn: (val: T | null) => void): void {
     this.onChange = fn;
     if (this.formGroup) {
-      this.formGroup.valueChanges
+      this.valueChangesSubscription?.unsubscribe();
+      this.valueChangesSubscription = this.formGroup.valueChanges
         .pipe(
-          takeUntilDestroyed(this.destroyRef),
           startWith(this.formGroup.value),
           distinctUntilChanged(),
           tap(val => {
@@ -37,7 +36,9 @@ export class FormGroupAccessorDirective<T extends object> implements ControlValu
             this.formGroup?.markAsUntouched();
           })
         )
-        .subscribe();
+        .subscribe(val => {
+          fn(val);
+        });
     }
   }
 
