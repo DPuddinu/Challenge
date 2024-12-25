@@ -20,8 +20,8 @@ import { TripCardComponent } from '@/components/trip-card/trip-card.component';
     ButtonComponent
   ],
   template: `
-    <div class="grid grid-rows-[auto_1fr] lg:grid-cols-[20%_1fr] h-full overflow-hidden">
-      <section class="p-4 pb-0 grid lg:bg-secondary-800 w-full">
+    <div class="lg:grid lg:grid-cols-[20%_1fr] h-full overflow-hidden">
+      <section class="p-4 pb-0 lg:bg-secondary-800 w-full">
         @if (viewportService.isLarge()) {
           <aside class="flex flex-col gap-8 w-full">
             <h3 class="text-secondary-content font-bold text-lg">Filters</h3>
@@ -41,44 +41,42 @@ import { TripCardComponent } from '@/components/trip-card/trip-card.component';
         }
       </section>
       <section>
-        <div>
-          <section class="p-4 flex flex-col gap-4">
-            <app-button (onClick)="loadTripOfTheDay()">Trip of the day</app-button>
-            @if (tripOfTheDay | async; as trip) {
-              @switch (trip.state) {
-                @case ('loading') {
-                  <div class="text-white">loading...</div>
-                }
-                @case ('loaded') {
-                  <app-trip-card [trip]="trip.data"></app-trip-card>
-                }
-                @case ('error') {
-                  <div class="text-white">error loading trip of the day</div>
-                }
+        <div class="p-4 flex flex-col gap-4">
+          <app-button (onClick)="loadTripOfTheDay()">Trip of the day</app-button>
+          @if (tripOfTheDay | async; as trip) {
+            @switch (trip.state) {
+              @case ('loading') {
+                <div class="text-white">loading...</div>
+              }
+              @case ('loaded') {
+                <app-trip-card [trip]="trip.data"></app-trip-card>
+              }
+              @case ('error') {
+                <div class="text-white">error loading trip of the day</div>
               }
             }
-          </section>
-          @if (tripsService.tripsResource.isLoading()) {
-            <div class="text-white">loading...</div>
-          }
-          @if (tripsService.tripsResource.error()) {
-            <div class="text-white">error...</div>
-          }
-          <section #tripsContainer class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 2xl:grid-cols-4 overflow-y-auto">
-            @for (trip of tripsService.tripsResource.value()?.items; track trip.id) {
-              <app-trip-card [trip]="trip"></app-trip-card>
-            }
-          </section>
-          @if (tripsService.tripsResource.value()?.items) {
-            <div class="flex justify-center pb-4">
-              <app-pagination
-                [currentPage]="currentPage"
-                [totalPages]="totalPages"
-                (pageChange)="onPageChange($event)"
-              ></app-pagination>
-            </div>
           }
         </div>
+        @if (tripsService.tripsResource.isLoading()) {
+          <div class="text-white">loading...</div>
+        }
+        @if (tripsService.tripsResource.error()) {
+          <div class="text-white">error...</div>
+        }
+        <section #tripsContainer class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 2xl:grid-cols-4 overflow-y-auto">
+          @for (trip of tripsService.tripsResource.value()?.items; track trip.id) {
+            <app-trip-card [trip]="trip"></app-trip-card>
+          }
+        </section>
+        @if (tripsService.tripsResource.value()?.items) {
+          <div class="flex justify-center pb-4">
+            <app-pagination
+              [currentPage]="currentPage"
+              [totalPages]="totalPages"
+              (pageChange)="onPageChange($event)"
+            ></app-pagination>
+          </div>
+        }
       </section>
     </div>
   `,

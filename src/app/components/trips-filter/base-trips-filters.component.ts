@@ -53,7 +53,7 @@ export class BaseTripsFiltersComponent {
 
   constructor(private tripsService: TripsService) {
     this.titleFilter.valueChanges
-      .pipe(
+      .pipe(                                                                                
         filter(title => !!title),
         debounceTime(300),
         takeUntilDestroyed()

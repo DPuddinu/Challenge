@@ -1,8 +1,10 @@
+import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SliderComponent } from './slider.component';
 
 describe('SliderComponent', () => {
   let component: SliderComponent;
+  let componentRef: ComponentRef<SliderComponent>;
   let fixture: ComponentFixture<SliderComponent>;
 
   beforeEach(async () => {
@@ -12,6 +14,10 @@ describe('SliderComponent', () => {
 
     fixture = TestBed.createComponent(SliderComponent);
     component = fixture.componentInstance;
+    componentRef = fixture.componentRef;
+    componentRef.setInput('min', 0);
+    componentRef.setInput('max', 100);
+
     fixture.detectChanges();
   });
 
