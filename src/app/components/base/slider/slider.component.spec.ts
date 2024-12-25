@@ -1,10 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SliderComponent } from './slider.component';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Component } from '@angular/core';
 
 // Test host component to test form integration
 @Component({
+  standalone: true,
+  imports: [SliderComponent, ReactiveFormsModule],
   template: `
     <form [formGroup]="form">
       <app-slider
@@ -105,8 +107,7 @@ describe('SliderComponent Form Integration', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SliderComponent],
-      declarations: [TestHostComponent]
+      imports: [SliderComponent, TestHostComponent, ReactiveFormsModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);
