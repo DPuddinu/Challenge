@@ -4,11 +4,11 @@ export type TQueryParamValue = string | string[] | number | number[] | boolean |
 export type TQueryParams = Record<string, TQueryParamValue>;
 
 export abstract class BaseQueryParamsService<K> {
-  private readonly queryParams = signal<TQueryParams | null>(null);
+  private readonly queryParams = signal<TQueryParams | undefined>(undefined);
   // private readonly router = inject(Router);
   // private readonly location = inject(Location);
 
-  constructor(protected readonly storageKey: string) {
+  constructor(protected readonly storageKey: string, private readonly initialParams: TQueryParams) {
     const storedParams = this.getStoredQueryParams();
     if (storedParams) {
       this.queryParams.set(storedParams);
@@ -56,7 +56,7 @@ export abstract class BaseQueryParamsService<K> {
   }
 
   reset() {
-    this.queryParams.set(null);
+    this.queryParams.set(this.initialParams);
     this.deleteStoredQueryParams();
     // this.router.navigate([], {
     //   relativeTo: this.router.routerState.root,
@@ -73,7 +73,7 @@ export abstract class BaseQueryParamsService<K> {
   //   this.location.go(urlTree.toString());
   // }
 
-  getStoredQueryParams(): TQueryParams | null {
+  getStoredQueryParams(): TQueryParams | undefined {
     const stored = sessionStorage.getItem(this.storageKey);
     return stored ? JSON.parse(stored) : null;
   }
@@ -84,5 +84,5 @@ export abstract class BaseQueryParamsService<K> {
     sessionStorage.setItem(this.storageKey, JSON.stringify(params));
   }
 
-  protected abstract fetchData(queryParams: TQueryParams | null, abortSignal: AbortSignal): K;
+  protected abstract fetchData(queryParams: TQueryParams | undefined, abortSignal: AbortSignal): K;
 }

@@ -1,7 +1,8 @@
 import { FormGroupAccessorDirective } from '@/directives/form-group-accessor.directive';
-import { ChangeDetectionStrategy, Component, effect, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, tap } from 'rxjs';
 import { LabelComponent } from '../label/label.component';
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
 
@@ -22,7 +23,6 @@ import { ValidationErrorsComponent } from '../validation-errors/validation-error
           <app-label [text]="label()" [for]="id()" />
         }
         <div class="relative pt-1">
-
           <div class="relative h-2 bg-secondary-600 rounded-lg">
             <input
               type="range"
@@ -44,8 +44,8 @@ import { ValidationErrorsComponent } from '../validation-errors/validation-error
         </div>
 
         <div class="flex justify-between mt-2 text-sm text-secondary-content">
-          <span >Min: {{ minValue() }}</span>
-          <span>Max: {{ maxValue() }}</span>
+          <span>Min: {{ minControl.value }}</span>
+          <span>Max: {{ maxControl.value }}</span>
         </div>
 
         @if (formGroup.touched && formGroup.dirty) {
@@ -57,7 +57,6 @@ import { ValidationErrorsComponent } from '../validation-errors/validation-error
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SliderComponent extends FormGroupAccessorDirective<{ min: number; max: number }> {
-  
   min = input.required<number>();
   max = input.required<number>();
   step = input<number>(1);
@@ -66,24 +65,30 @@ export class SliderComponent extends FormGroupAccessorDirective<{ min: number; m
   id = input<string>('');
   customErrorMessages = input<Record<string, string>>({});
 
-  minValue;
-  maxValue;
+  minValue: Signal<number | undefined>;
+  maxValue: Signal<number | undefined>;
 
   constructor() {
     super();
-    
+
     this.formGroup = new FormGroup({
       min: new FormControl(),
       max: new FormControl()
     });
 
-    this.minValue = toSignal(this.formGroup.get('min')!.valueChanges);
-    this.maxValue = toSignal(this.formGroup.get('max')!.valueChanges);
+    this.minValue = toSignal(
+      this.formGroup.get('min')!.valueChanges.pipe(
+        debounceTime(300),
+        tap(value => console.log('minValue', value))
+      )
+    );
+
+    this.maxValue = toSignal(this.formGroup.get('max')!.valueChanges.pipe(debounceTime(300)));
 
     effect(() => {
       const minVal = this.minValue();
       const maxVal = this.maxValue();
-      if (minVal !== null && maxVal !== null && this.formGroup) {
+      if (!!minVal && !!maxVal && this.formGroup) {
         if (minVal > maxVal) {
           this.formGroup.get('min')?.setValue(maxVal, { emitEvent: false });
         }
@@ -92,6 +97,13 @@ export class SliderComponent extends FormGroupAccessorDirective<{ min: number; m
         }
       }
     });
+  }
+
+  override writeValue(value: { min: number; max: number } | null): void {
+    if (value) {
+      super.writeValue(value);
+      this.formGroup?.patchValue(value);
+    }
   }
 
   get minControl() {
