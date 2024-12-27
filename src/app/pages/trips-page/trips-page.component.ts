@@ -25,7 +25,7 @@ import { TRIPS_PER_PAGE } from '@/services/trips-service/trips.constants';
       <section class="p-4 pb-0 lg:bg-secondary-800 w-full">
         @if (viewportService.isLarge()) {
           <aside class="flex flex-col gap-8 w-full">
-            <h3 class="text-secondary-content font-bold text-lg">Filters</h3>
+            <h3 class="text-secondary-content font-bold text-lg" i18n>Filters</h3>
             @defer (when !!tripsService.tripsResource.value()) {
               <app-base-trips-filters></app-base-trips-filters>
             }
@@ -43,7 +43,7 @@ import { TRIPS_PER_PAGE } from '@/services/trips-service/trips.constants';
       </section>
       <section>
         <div class="p-4 flex flex-col gap-4">
-          <app-button (onClick)="loadTripOfTheDay()">Trip of the day</app-button>
+          <app-button (onClick)="loadTripOfTheDay()" i18n>Trip of the day</app-button>
           @if (tripOfTheDay | async; as trip) {
             @switch (trip.state) {
               @case ('loading') {

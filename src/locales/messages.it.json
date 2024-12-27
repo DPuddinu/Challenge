@@ -1,10 +1,19 @@
 {
   "locale": "it",
   "translations": {
-    "1727592580805917836": " Primo ",
-    "2093382569433644276": " Precedente ",
-    "1575155165213711236": " Successivo ",
-    "8536024588934182426": " Ultimo ",
-    "1177923629328209637": "Viaggi"
+    "1737753151350322492": "{$PH}",
+    "input.label.title": "Titolo",
+    "input.placeholder.title": "Inserisci titolo",
+    "input.label.minRating": "Valutazione minima",
+    "input.placeholder.minRating": "Inserisci valutazione minima",
+    "input.label.priceRange": "Intervallo di prezzo",
+    "input.label.sortBy": "Ordina per",
+    "input.label.sortOrder": "Ordinamento",
+    "input.label.tags": "Tag",
+    "input.placeholder.tags": "Inserisci tag",
+    "1691261770947793611": "Viaggi",
+    "4163272119298020373": "Filtri",
+    "7144040171324612734": "Viaggio del giorno",
+    "1953429831171058348": " Ripristina Filtri "
   }
 }

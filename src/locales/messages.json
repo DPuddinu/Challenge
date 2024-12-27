@@ -1,10 +1,17 @@
 {
   "locale": "en-US",
   "translations": {
-    "1727592580805917836": " First ",
-    "2093382569433644276": " Previous ",
-    "1575155165213711236": " Next ",
-    "8536024588934182426": " Last ",
-    "1177923629328209637": "Trips"
+    "1737753151350322492": "{$PH}",
+    "1691261770947793611": "Trips",
+    "input.placeholder.title": "Enter title",
+    "input.label.title": "Title",
+    "input.label.sortBy": "Sort By",
+    "input.label.sortOrder": "Sort Order",
+    "input.placeholder.minRating": "Enter min rating",
+    "input.label.minRating": "Min Rating",
+    "input.label.priceRange": "Price Range",
+    "1953429831171058348": " Clear Filters ",
+    "4163272119298020373": "Filters",
+    "7144040171324612734": "Trip of the day"
   }
 }

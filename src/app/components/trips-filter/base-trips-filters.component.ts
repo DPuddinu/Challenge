@@ -17,29 +17,50 @@ import { INITIAL_QUERY_PARAMS } from '@/services/trips-service/trips.constants';
     <form [formGroup]="formGroup" class="py-4 flex flex-col gap-4">
       <app-input
         type="text"
+        i18n-placeholder="@@input.placeholder.title"
         placeholder="Enter title"
+        i18n-label="@@input.label.title"
         label="Title"
         id="title"
         formControlName="titleFilter"
       ></app-input>
-      <app-select [options]="sortByOptions" label="Sort By" formControlName="sortBy"></app-select>
-      <app-select [options]="sortOrderOptions" label="Sort Order" formControlName="sortOrder"></app-select>
+      <app-select 
+        [options]="sortByOptions" 
+        i18n-label="@@input.label.sortBy"
+        label="Sort By" 
+        formControlName="sortBy"
+      ></app-select>
+      <app-select 
+        [options]="sortOrderOptions" 
+        i18n-label="@@input.label.sortOrder"
+        label="Sort Order" 
+        formControlName="sortOrder"
+      ></app-select>
       <app-input
         type="number"
+        i18n-placeholder="@@input.placeholder.minRating"
         placeholder="Enter min rating"
+        i18n-label="@@input.label.minRating"
         label="Min Rating"
         id="minRating"
         formControlName="minRating"
       ></app-input>
-      <app-slider label="Price Range" formControlName="priceRange" [min]="1" [max]="10000" [step]="10"></app-slider>
+      <app-slider 
+        i18n-label="@@input.label.priceRange"
+        label="Price Range" 
+        formControlName="priceRange" 
+        [min]="1" 
+        [max]="10000" 
+        [step]="10"
+      ></app-slider>
 
       <!-- <app-combo-box
+        i18n-label="@@input.label.tags"
         label="Tags"
         comboBoxId="myComboBox"
         formControlName="tags"
-        
       ></app-combo-box> -->
-      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md" (click)="clearFilters()">
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md" (click)="clearFilters()" i18n>
         Clear Filters
       </button>
     </form>

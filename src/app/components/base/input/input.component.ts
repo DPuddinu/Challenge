@@ -1,5 +1,5 @@
 import { BaseInputComponent } from '@/components/base/base-input.component';
-import { LabelComponent } from "@/components/base/label/label.component";
+import { LabelComponent } from '@/components/base/label/label.component';
 import { ValidationErrorsComponent } from '@/components/base/validation-errors/validation-errors.component';
 import { ChangeDetectionStrategy, Component, forwardRef, input } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
@@ -20,7 +20,7 @@ type InputType = 'text' | 'number' | 'email' | 'password';
   template: ` @if (control) {
     <div>
       @if (label()) {
-        <app-label [text]="label()" [for]="id()"></app-label>
+        <app-label [text]="getLabelText()" [for]="id()"></app-label>
       }
       <input
         [type]="type()"
@@ -34,7 +34,7 @@ type InputType = 'text' | 'number' | 'email' | 'password';
                focus:outline-none focus:ring-2 focus:ring-primary-500
                disabled:bg-secondary-100 disabled:cursor-not-allowed
                transition-colors duration-200"
-        [placeholder]="placeholder()"
+        [placeholder]="getPlaceholder()"
       />
       @if (control.touched && control.dirty) {
         <app-validation-errors [customErrorMessages]="customErrorMessages()" [errors]="control.errors">
@@ -46,4 +46,12 @@ type InputType = 'text' | 'number' | 'email' | 'password';
 })
 export class InputComponent<T> extends BaseInputComponent<T> {
   type = input.required<InputType>();
+
+  protected getLabelText() {
+    return $localize`${this.label()}`;
+  }
+  
+  protected getPlaceholder() {
+    return $localize`${this.placeholder()}`;
+  }
 }
