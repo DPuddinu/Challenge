@@ -7,9 +7,10 @@ I have, however, provided an additional implementation of caching using the RxJs
 
 To see service worker in action, a possible approach is as follows:
 1. npm install --global http-server (or another package manager, I used bun)
-2. cd dist/app-trips/browser
-3. http-server -p 8081
-4. navigate to http://127.0.0.1:8081/en-US
+2. nx build
+3. cd dist/app-trips/browser
+4. http-server -p 8081
+5. navigate to http://127.0.0.1:8081/en-US
 
 ## Performance
 I mainly considered the following aspects to improve performance:
