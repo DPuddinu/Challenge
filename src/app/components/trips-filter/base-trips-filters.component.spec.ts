@@ -1,7 +1,8 @@
-import { INITIAL_QUERY_PARAMS, TripsService } from '@/services/trips-service/trips.service';
+import { TripsService } from '@/services/trips-service/trips.service';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BaseTripsFiltersComponent } from './base-trips-filters.component';
+import { INITIAL_QUERY_PARAMS } from '@/services/trips-service/trips.constants';
 
 describe('BaseTripsFiltersComponent', () => {
   let component: BaseTripsFiltersComponent;
