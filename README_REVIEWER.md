@@ -27,3 +27,7 @@ I have implemented support for both English (default) and Italian languages. How
 
 ## TESTING
 All tests were done with Karma; I saw that it is currently deprecated, but in the official documentation, they still do not suggest using Jest since it is still in the experimental phase.
+
+
+## GIT
+I used only one branch for this challenge because I am the only developer working on this project. In a professional environment, I would create different branches for features, bug fixes, refactoring, etc., according to the team's specifics and open pull requests.
