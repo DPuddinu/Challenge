@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { TRIPS_PER_PAGE, TripsResponse, TripsService } from './trips.service';
+import { INITIAL_QUERY_PARAMS, TRIPS_PER_PAGE, TripsResponse, TripsService } from './trips.service';
 
 describe('TripsService', () => {
   let service: TripsService;
@@ -18,10 +18,7 @@ describe('TripsService', () => {
   it('should initialize with default query params', () => {
     service.reset();
     const queryParams = service.getQueryParams();
-    expect(queryParams).toEqual({
-      page: 1,
-      limit: TRIPS_PER_PAGE
-    });
+    expect(queryParams).toEqual(INITIAL_QUERY_PARAMS);
   });
 
   it('should fetch data correctly', async () => {
@@ -68,9 +65,6 @@ describe('TripsService', () => {
   it('should reset query params', () => {
     service.reset();
     const queryParams = service.getQueryParams();
-    expect(queryParams).toEqual({
-      page: 1,
-      limit: TRIPS_PER_PAGE
-    });
+    expect(queryParams).toEqual(INITIAL_QUERY_PARAMS);
   });
 });

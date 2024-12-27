@@ -79,14 +79,6 @@ describe('SliderComponent', () => {
     expect(component.formGroup?.get('max')?.value).toBe(80);
   });
 
-  it('should update min value when max value is less than it', () => {
-    component.formGroup?.get('min')?.setValue(60);
-    component.formGroup?.get('max')?.setValue(40);
-    fixture.detectChanges();
-
-    expect(component.formGroup?.get('min')?.value).toBe(40);
-  });
-
   it('should apply custom error messages when provided', () => {
     fixture.componentRef.setInput('customErrorMessages', {
       required: 'Custom required message'

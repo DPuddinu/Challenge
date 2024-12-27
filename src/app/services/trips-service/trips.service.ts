@@ -35,15 +35,6 @@ export class TripsService extends BaseQueryParamsService<Promise<TripsResponse>>
     super('trips-filters', INITIAL_QUERY_PARAMS);
   }
 
-  private init() {
-    this.setQueryParams(INITIAL_QUERY_PARAMS);
-  }
-
-  override reset(): void {
-    super.reset();
-    this.init();
-  }
-
   override async fetchData(
     queryParams: Partial<FlightFilterFields> | undefined,
     abortSignal: AbortSignal

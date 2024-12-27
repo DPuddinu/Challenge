@@ -89,8 +89,8 @@ export class BaseTripsFiltersComponent {
 
   clearFilters() {
     this.formGroup.reset({
-      sortBy: 'creationDate',
-      sortOrder: 'ASC',
+      sortBy: INITIAL_QUERY_PARAMS.sortBy,
+      sortOrder: INITIAL_QUERY_PARAMS.sortOrder,
       minRating: INITIAL_QUERY_PARAMS.minRating,
       priceRange: {
         min: INITIAL_QUERY_PARAMS.minPrice,

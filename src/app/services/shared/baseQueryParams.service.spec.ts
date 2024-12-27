@@ -36,7 +36,7 @@ describe('BaseQueryParamsService', () => {
   it('should reset query params', () => {
     service.setQueryParam('key1', 'value1');
     service.reset();
-    expect(service.getQueryParams()).toBeNull();
+    expect(service.getQueryParams()).toEqual({});
   });
 
   it('should delete stored query params', () => {
