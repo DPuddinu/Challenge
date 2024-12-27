@@ -6,15 +6,21 @@ import { filterObject } from '@/utils/filterObject';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs';
-import { SliderComponent } from "../base/slider/slider.component";
+import { debounceTime, filter, map } from 'rxjs';
+import { SliderComponent } from '../base/slider/slider.component';
 
 @Component({
   selector: 'app-base-trips-filters',
   imports: [ReactiveFormsModule, InputComponent, SelectComponent, SliderComponent],
   template: `
     <form [formGroup]="formGroup" class="py-4 flex flex-col gap-4">
-      <app-input type="text" placeholder="Enter title" label="Title" id="title" formControlName="titleFilter"></app-input>
+      <app-input
+        type="text"
+        placeholder="Enter title"
+        label="Title"
+        id="title"
+        formControlName="titleFilter"
+      ></app-input>
       <app-select [options]="sortByOptions" label="Sort By" formControlName="sortBy"></app-select>
       <app-select [options]="sortOrderOptions" label="Sort Order" formControlName="sortOrder"></app-select>
       <app-input
@@ -63,19 +69,16 @@ export class BaseTripsFiltersComponent {
             minPrice: values.priceRange?.min,
             maxPrice: values.priceRange?.max,
             titleFilter: values.titleFilter
-          }
+          };
           const validValues = filterObject(filters);
           return Object.keys(validValues).length > 0 ? validValues : undefined;
         }),
         filter(values => !!values),
         debounceTime(300),
-        distinctUntilChanged(),
-        takeUntilDestroyed(),
+        takeUntilDestroyed()
       )
       .subscribe((values: Partial<FlightFilterFields>) => {
-        console.log('values', values);
         this.tripsService.setQueryParams(values);
-        this.formGroup.markAsPristine();
       });
 
     const storedParams = this.tripsService.getStoredQueryParams();
@@ -92,7 +95,7 @@ export class BaseTripsFiltersComponent {
       priceRange: {
         min: INITIAL_QUERY_PARAMS.minPrice,
         max: INITIAL_QUERY_PARAMS.maxPrice
-      },
+      }
     });
     this.tripsService.reset();
   }

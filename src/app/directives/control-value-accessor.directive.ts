@@ -1,4 +1,4 @@
-import { DestroyRef, Directive, inject, Injector, OnInit, signal } from '@angular/core';
+import { Directive, inject, Injector, OnDestroy, OnInit, signal } from '@angular/core';
 import {
   ControlValueAccessor,
   FormControl,
@@ -13,13 +13,12 @@ import { distinctUntilChanged, startWith, Subscription } from 'rxjs';
   selector: '[appControlValueAccessor]',
   standalone: true
 })
-export class ControlValueAccessorDirective<T> implements ControlValueAccessor, OnInit {
+export class ControlValueAccessorDirective<T> implements ControlValueAccessor, OnInit, OnDestroy {
   private injector = inject(Injector);
-  private destroyRef = inject(DestroyRef);
 
   control: FormControl | undefined;
   isDisabled = signal(false);
-  
+
   private _onTouched!: () => T;
   protected onChange!: (value: T) => void;
   private valueChangesSubscription: Subscription | undefined;
@@ -62,7 +61,6 @@ export class ControlValueAccessorDirective<T> implements ControlValueAccessor, O
   registerOnChange(fn: (val: T | null) => T): void {
     this.onChange = fn;
     if (this.control) {
-      this.valueChangesSubscription?.unsubscribe();
       this.valueChangesSubscription = this.control.valueChanges
         .pipe(startWith(this.control.value), distinctUntilChanged())
         .subscribe(val => {
@@ -83,5 +81,8 @@ export class ControlValueAccessorDirective<T> implements ControlValueAccessor, O
         this.control.enable();
       }
     }
+  }
+  ngOnDestroy(): void {
+    this.valueChangesSubscription?.unsubscribe();
   }
 }

@@ -12,6 +12,8 @@ export abstract class BaseQueryParamsService<K> {
     const storedParams = this.getStoredQueryParams();
     if (storedParams) {
       this.queryParams.set(storedParams);
+    } else {
+      this.queryParams.set(initialParams)
     }
   }
 

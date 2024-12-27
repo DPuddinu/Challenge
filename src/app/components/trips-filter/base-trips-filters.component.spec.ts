@@ -6,20 +6,15 @@ import { BaseTripsFiltersComponent } from './base-trips-filters.component';
 describe('BaseTripsFiltersComponent', () => {
   let component: BaseTripsFiltersComponent;
   let fixture: ComponentFixture<BaseTripsFiltersComponent>;
-  let tripsServiceMock: Partial<TripsService>;
+  let tripsServiceMock: jasmine.SpyObj<TripsService>;
 
   beforeEach(async () => {
-    tripsServiceMock = {
-      setQueryParam: jasmine.createSpy('setQueryParam'),
-      setQueryParams: jasmine.createSpy('setQueryParams'),
-      reset: jasmine.createSpy('reset'),
-      getStoredQueryParams: jasmine
-        .createSpy('getStoredQueryParams')
-        .and.returnValue({ titleFilter: 'Test', sortBy: 'creationDate' })
-    };
+    tripsServiceMock = jasmine.createSpyObj('TripsService', ['setQueryParams', 'reset', 'getStoredQueryParams']);
+    tripsServiceMock.getStoredQueryParams.and.returnValue(undefined); // Mocking stored params
 
     await TestBed.configureTestingModule({
-      imports: [BaseTripsFiltersComponent, ReactiveFormsModule], // Standalone component
+      imports: [ReactiveFormsModule],
+      declarations: [BaseTripsFiltersComponent],
       providers: [{ provide: TripsService, useValue: tripsServiceMock }]
     }).compileComponents();
 
@@ -28,12 +23,34 @@ describe('BaseTripsFiltersComponent', () => {
     fixture.detectChanges();
   });
 
-  afterEach(() => {
-    // Ensure the component is properly destroyed after each test
-    fixture.destroy();
+  it('should create the component', () => {
+    expect(component).toBeTruthy();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should initialize the form with default values', () => {
+    expect(component.formGroup.value).toEqual({
+      titleFilter: null,
+      sortBy: 'creationDate',
+      sortOrder: 'ASC',
+      priceRange: { min: 1, max: 10000 },
+      minRating: null
+    });
+  });
+
+  it('should call setQueryParams on value changes', () => {
+    component.formGroup.patchValue({ titleFilter: 'Test' });
+    expect(tripsServiceMock.setQueryParams).toHaveBeenCalled();
+  });
+
+  it('should reset the form on clearFilters', () => {
+    component.clearFilters();
+    expect(component.formGroup.value).toEqual({
+      titleFilter: null,
+      sortBy: 'creationDate',
+      sortOrder: 'ASC',
+      priceRange: { min: 1, max: 10000 },
+      minRating: null
+    });
+    expect(tripsServiceMock.reset).toHaveBeenCalled();
   });
 });

@@ -41,7 +41,7 @@ describe('TripsService', () => {
     } as Response));
 
     const controller = new AbortController();
-    const response = await service.fetchData(null, controller.signal);
+    const response = await service.fetchData(undefined, controller.signal);
     expect(response).toEqual(mockResponse);
   });
 
@@ -59,7 +59,7 @@ describe('TripsService', () => {
 
     const controller = new AbortController();
     try {
-      await service.fetchData(null, controller.signal);
+      await service.fetchData(undefined, controller.signal);
     } catch (error) {
       expect((error as Error).message).toEqual('HTTP Error 404');
     }

@@ -1,10 +1,13 @@
-import { FormGroupAccessorDirective } from '@/directives/form-group-accessor.directive';
-import { ChangeDetectionStrategy, Component, effect, input, Signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, tap } from 'rxjs';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { LabelComponent } from '../label/label.component';
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
+
+type TRange = {
+  min: number;
+  max: number;
+};
 
 @Component({
   selector: 'app-slider',
@@ -44,8 +47,8 @@ import { ValidationErrorsComponent } from '../validation-errors/validation-error
         </div>
 
         <div class="flex justify-between mt-2 text-sm text-secondary-content">
-          <span>Min: {{ minControl.value }}</span>
-          <span>Max: {{ maxControl.value }}</span>
+          <span>Min: {{ formGroup.value.min }}</span>
+          <span>Max: {{ formGroup.value.max }}</span>
         </div>
 
         @if (formGroup.touched && formGroup.dirty) {
@@ -56,62 +59,88 @@ import { ValidationErrorsComponent } from '../validation-errors/validation-error
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SliderComponent extends FormGroupAccessorDirective<{ min: number; max: number }> {
+export class SliderComponent implements ControlValueAccessor {
   min = input.required<number>();
   max = input.required<number>();
+
+  formGroup = new FormGroup({
+    min: new FormControl(),
+    max: new FormControl()
+  });
+
   step = input<number>(1);
   label = input<string>('');
   placeholder = input<string>('');
   id = input<string>('');
   customErrorMessages = input<Record<string, string>>({});
 
-  minValue: Signal<number | undefined>;
-  maxValue: Signal<number | undefined>;
+  private _onTouched!: () => void;
+  private onChange!: (value: TRange | null) => void;
 
   constructor() {
-    super();
-
-    this.formGroup = new FormGroup({
-      min: new FormControl(),
-      max: new FormControl()
-    });
-
-    this.minValue = toSignal(
-      this.formGroup.get('min')!.valueChanges.pipe(
-        debounceTime(300),
-        tap(value => console.log('minValue', value))
-      )
-    );
-
-    this.maxValue = toSignal(this.formGroup.get('max')!.valueChanges.pipe(debounceTime(300)));
-
-    effect(() => {
-      const minVal = this.minValue();
-      const maxVal = this.maxValue();
-      if (!!minVal && !!maxVal && this.formGroup) {
-        if (minVal > maxVal) {
-          this.formGroup.get('min')?.setValue(maxVal, { emitEvent: false });
-        }
-        if (maxVal < minVal) {
-          this.formGroup.get('max')?.setValue(minVal, { emitEvent: false });
-        }
+    this.formGroup.valueChanges.pipe(takeUntilDestroyed()).subscribe((val) => {
+      if (val.min > val.max) {
+        this.formGroup.patchValue(
+          {
+            min: val.min,
+            max: val.min
+          },
+          {
+            emitEvent: false
+          }
+        );
+        return;
+      }
+      if (val.max < val.min) {
+        this.formGroup.patchValue(
+          {
+            min: val.max,
+            max: val.max
+          },
+          {
+            emitEvent: false
+          }
+        );
+        return;
+      }
+      if (val.min !== undefined && val.max !== undefined && this.onChange) {
+        this.onChange(val as TRange);
+      }
+      if (this._onTouched) {
+        this._onTouched();
       }
     });
-  }
-
-  override writeValue(value: { min: number; max: number } | null): void {
-    if (value) {
-      super.writeValue(value);
-      this.formGroup?.patchValue(value);
-    }
   }
 
   get minControl() {
     return this.formGroup?.get('min') as FormControl;
   }
-
   get maxControl() {
-    return this.formGroup?.get('max') as FormControl;
+    return this.formGroup.get('max') as FormControl;
+  }
+
+  writeValue(value: TRange): void {
+    if (this.formGroup && value) {
+      this.formGroup.patchValue(value, { emitEvent: false });
+    }
+  }
+
+  registerOnChange(fn: (val: TRange | null) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this._onTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    if (this.formGroup) {
+      if (isDisabled) {
+        this.formGroup.disable();
+      } else {
+        this.formGroup.enable();
+      }
+    }
   }
 
   protected readonly rangeInputClass = `absolute w-full h-2 appearance-none bg-transparent

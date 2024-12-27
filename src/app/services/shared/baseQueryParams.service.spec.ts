@@ -1,7 +1,7 @@
 import { BaseQueryParamsService, TQueryParams } from './baseQueryParams.service';
 
 class TestQueryParamsService extends BaseQueryParamsService<void> {
-  protected fetchData(_queryParams: TQueryParams | null, _abortSignal: AbortSignal): void {
+  protected fetchData(_queryParams: TQueryParams | undefined, _abortSignal: AbortSignal): void {
     // Mock implementation for testing
   }
 }
@@ -11,14 +11,14 @@ describe('BaseQueryParamsService', () => {
   const storageKey = 'testKey';
 
   beforeEach(() => {
-    service = new TestQueryParamsService(storageKey);
+    service = new TestQueryParamsService(storageKey, {});
     sessionStorage.clear(); // Clear session storage before each test
   });
 
   it('should initialize with stored query params', () => {
     const params = { key1: 'value1' };
     sessionStorage.setItem(storageKey, JSON.stringify(params));
-    const newService = new TestQueryParamsService(storageKey);
+    const newService = new TestQueryParamsService(storageKey, params);
     expect(newService.getQueryParams()).toEqual(params);
   });
 
