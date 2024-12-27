@@ -1,13 +1,14 @@
 import { InputComponent } from '@/components/base/input/input.component';
 import { SelectComponent } from '@/components/base/select/select.component';
 import { FlightFilterFields, flightSortByFields } from '@/models/trip.types';
-import { INITIAL_QUERY_PARAMS, TripsService } from '@/services/trips-service/trips.service';
+import { TripsService } from '@/services/trips-service/trips.service';
 import { filterObject } from '@/utils/filterObject';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, filter, map } from 'rxjs';
 import { SliderComponent } from '../base/slider/slider.component';
+import { INITIAL_QUERY_PARAMS } from '@/services/trips-service/trips.constants';
 
 @Component({
   selector: 'app-base-trips-filters',

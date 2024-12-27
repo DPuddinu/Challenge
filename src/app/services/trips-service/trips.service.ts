@@ -2,23 +2,13 @@ import { FlightFilterFields, Trip } from '@/models/trip.types';
 import { Injectable, resource } from '@angular/core';
 import { fetchApi } from '../api/api.config';
 import { BaseQueryParamsService } from '../shared/baseQueryParams.service';
+import { INITIAL_QUERY_PARAMS } from './trips.constants';
 
 export type TripsResponse = {
   items: Trip[];
   total: number;
   limit: number;
   page: number;
-};
-export const TRIPS_PER_PAGE = 5;
-
-export const INITIAL_QUERY_PARAMS: Partial<FlightFilterFields> = {
-  page: 1,
-  limit: TRIPS_PER_PAGE,
-  sortBy: 'creationDate',
-  sortOrder: 'ASC',
-  minRating: 1,
-  maxPrice: 10000,
-  minPrice: 1
 };
 
 @Injectable({

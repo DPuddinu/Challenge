@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { INITIAL_QUERY_PARAMS, TRIPS_PER_PAGE, TripsResponse, TripsService } from './trips.service';
+import {  TripsResponse, TripsService } from './trips.service';
+import { INITIAL_QUERY_PARAMS, TRIPS_PER_PAGE } from './trips.constants';
 
 describe('TripsService', () => {
   let service: TripsService;

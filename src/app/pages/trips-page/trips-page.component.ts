@@ -3,11 +3,12 @@ import { MobileDialogComponent } from '@/components/base/mobile-dialog/mobile-di
 import { PaginationComponent } from '@/components/pagination/pagination.component';
 import { BaseTripsFiltersComponent } from '@/components/trips-filter/base-trips-filters.component';
 import { TripofthedayService } from '@/services/trip-of-the-day/trip-of-the-day.service';
-import { TRIPS_PER_PAGE, TripsService } from '@/services/trips-service/trips.service';
+import { TripsService } from '@/services/trips-service/trips.service';
 import { ViewportService } from '@/services/viewport/viewport.service';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TripCardComponent } from '@/components/trip-card/trip-card.component';
+import { TRIPS_PER_PAGE } from '@/services/trips-service/trips.constants';
 
 @Component({
   selector: 'app-trips-page',
